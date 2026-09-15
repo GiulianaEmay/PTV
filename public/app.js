@@ -6,6 +6,13 @@ const cargando = document.getElementById("cargando");
 
 const charts = {};
 
+const PALETA = ["#3ddc97", "#5eb8ff", "#f5c451", "#ff6b6b", "#b28dff", "#4fd1c5"];
+
+Chart.defaults.color = "#6b7684";
+Chart.defaults.borderColor = "#1e2530";
+Chart.defaults.font.family = "'Inter', 'Segoe UI', Arial, sans-serif";
+Chart.defaults.font.size = 12;
+
 function formatoMoneda(valor) {
   return new Intl.NumberFormat("es-PE", { style: "currency", currency: "PEN" }).format(valor || 0);
 }
@@ -75,35 +82,38 @@ function actualizarGrafico(id, tipo, config) {
 }
 
 function renderGraficos(kpis) {
+  const ejes = { grid: { color: "#1e2530" }, ticks: { color: "#6b7684" } };
+
   actualizarGrafico("chartDiaSemana", "bar", {
     data: {
       labels: kpis.ventasPorDiaSemana.map((d) => d.dia),
-      datasets: [{ label: "Ventas", data: kpis.ventasPorDiaSemana.map((d) => d.total), backgroundColor: "#2563eb" }],
+      datasets: [{ label: "Ventas", data: kpis.ventasPorDiaSemana.map((d) => d.total), backgroundColor: "#3ddc97", borderRadius: 2 }],
     },
-    options: { plugins: { legend: { display: false } } },
+    options: { plugins: { legend: { display: false } }, scales: { x: ejes, y: ejes } },
   });
 
   actualizarGrafico("chartHora", "line", {
     data: {
       labels: kpis.ventasPorHora.map((_, h) => `${h}:00`),
-      datasets: [{ label: "Ventas", data: kpis.ventasPorHora, borderColor: "#2563eb", tension: 0.3 }],
+      datasets: [{ label: "Ventas", data: kpis.ventasPorHora, borderColor: "#5eb8ff", backgroundColor: "rgba(94,184,255,0.1)", fill: true, tension: 0.3, pointRadius: 0 }],
     },
-    options: { plugins: { legend: { display: false } } },
+    options: { plugins: { legend: { display: false } }, scales: { x: ejes, y: ejes } },
   });
 
   actualizarGrafico("chartPago", "doughnut", {
     data: {
       labels: kpis.ventasPorMetodoPago.map((p) => p.nombre),
-      datasets: [{ data: kpis.ventasPorMetodoPago.map((p) => p.total) }],
+      datasets: [{ data: kpis.ventasPorMetodoPago.map((p) => p.total), backgroundColor: PALETA, borderColor: "#10141b", borderWidth: 2 }],
     },
+    options: { plugins: { legend: { labels: { color: "#6b7684" } } } },
   });
 
   actualizarGrafico("chartProductos", "bar", {
     data: {
       labels: kpis.productosMasVendidos.map((p) => p.nombre),
-      datasets: [{ label: "Unidades", data: kpis.productosMasVendidos.map((p) => p.cantidad), backgroundColor: "#16a34a" }],
+      datasets: [{ label: "Unidades", data: kpis.productosMasVendidos.map((p) => p.cantidad), backgroundColor: "#5eb8ff", borderRadius: 2 }],
     },
-    options: { indexAxis: "y", plugins: { legend: { display: false } } },
+    options: { indexAxis: "y", plugins: { legend: { display: false } }, scales: { x: ejes, y: ejes } },
   });
 }
 
