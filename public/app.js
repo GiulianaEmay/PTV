@@ -6,10 +6,10 @@ const cargando = document.getElementById("cargando");
 
 const charts = {};
 
-const PALETA = ["#3ddc97", "#5eb8ff", "#f5c451", "#ff6b6b", "#b28dff", "#4fd1c5"];
+const PALETA = ["#7c3aed", "#a855f7", "#c4b5fd", "#e0304a", "#b3690a", "#4f46e5"];
 
-Chart.defaults.color = "#6b7684";
-Chart.defaults.borderColor = "#1e2530";
+Chart.defaults.color = "#78798c";
+Chart.defaults.borderColor = "#e6e4ee";
 Chart.defaults.font.family = "'Inter', 'Segoe UI', Arial, sans-serif";
 Chart.defaults.font.size = 12;
 
@@ -82,12 +82,12 @@ function actualizarGrafico(id, tipo, config) {
 }
 
 function renderGraficos(kpis) {
-  const ejes = { grid: { color: "#1e2530" }, ticks: { color: "#6b7684" } };
+  const ejes = { grid: { color: "#e6e4ee" }, ticks: { color: "#78798c" } };
 
   actualizarGrafico("chartDiaSemana", "bar", {
     data: {
       labels: kpis.ventasPorDiaSemana.map((d) => d.dia),
-      datasets: [{ label: "Ventas", data: kpis.ventasPorDiaSemana.map((d) => d.total), backgroundColor: "#3ddc97", borderRadius: 2 }],
+      datasets: [{ label: "Ventas", data: kpis.ventasPorDiaSemana.map((d) => d.total), backgroundColor: "#7c3aed", borderRadius: 2 }],
     },
     options: { plugins: { legend: { display: false } }, scales: { x: ejes, y: ejes } },
   });
@@ -95,7 +95,7 @@ function renderGraficos(kpis) {
   actualizarGrafico("chartHora", "line", {
     data: {
       labels: kpis.ventasPorHora.map((_, h) => `${h}:00`),
-      datasets: [{ label: "Ventas", data: kpis.ventasPorHora, borderColor: "#5eb8ff", backgroundColor: "rgba(94,184,255,0.1)", fill: true, tension: 0.3, pointRadius: 0 }],
+      datasets: [{ label: "Ventas", data: kpis.ventasPorHora, borderColor: "#7c3aed", backgroundColor: "rgba(124,58,237,0.08)", fill: true, tension: 0.3, pointRadius: 0 }],
     },
     options: { plugins: { legend: { display: false } }, scales: { x: ejes, y: ejes } },
   });
@@ -103,15 +103,15 @@ function renderGraficos(kpis) {
   actualizarGrafico("chartPago", "doughnut", {
     data: {
       labels: kpis.ventasPorMetodoPago.map((p) => p.nombre),
-      datasets: [{ data: kpis.ventasPorMetodoPago.map((p) => p.total), backgroundColor: PALETA, borderColor: "#10141b", borderWidth: 2 }],
+      datasets: [{ data: kpis.ventasPorMetodoPago.map((p) => p.total), backgroundColor: PALETA, borderColor: "#ffffff", borderWidth: 2 }],
     },
-    options: { plugins: { legend: { labels: { color: "#6b7684" } } } },
+    options: { plugins: { legend: { labels: { color: "#78798c" } } } },
   });
 
   actualizarGrafico("chartProductos", "bar", {
     data: {
       labels: kpis.productosMasVendidos.map((p) => p.nombre),
-      datasets: [{ label: "Unidades", data: kpis.productosMasVendidos.map((p) => p.cantidad), backgroundColor: "#5eb8ff", borderRadius: 2 }],
+      datasets: [{ label: "Unidades", data: kpis.productosMasVendidos.map((p) => p.cantidad), backgroundColor: "#a855f7", borderRadius: 2 }],
     },
     options: { indexAxis: "y", plugins: { legend: { display: false } }, scales: { x: ejes, y: ejes } },
   });

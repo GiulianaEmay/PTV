@@ -1,24 +1,26 @@
 :root {
-  --bg: #0a0d12;
-  --bg-elevated: #10141b;
-  --card-bg: #10141b;
-  --card-bg-hover: #141924;
-  --text: #e4e9f0;
-  --muted: #6b7684;
-  --primary: #3ddc97;
-  --primary-dim: #2a9d6e;
-  --accent: #5eb8ff;
-  --border: #1e2530;
-  --border-strong: #2a3341;
-  --danger: #ff6b6b;
-  --danger-bg: #2a1418;
-  --warn: #f5c451;
-  --warn-bg: #241d0c;
-  --ok: #3ddc97;
-  --ok-bg: #0f2119;
+  --bg: #fafafc;
+  --bg-elevated: #ffffff;
+  --card-bg: #ffffff;
+  --card-bg-hover: #f4f2fb;
+  --text: #1a1a23;
+  --muted: #78798c;
+  --primary: #7c3aed;
+  --primary-dim: #6425d0;
+  --primary-contrast: #ffffff;
+  --accent: #a855f7;
+  --border: #e6e4ee;
+  --border-strong: #cfccdf;
+  --danger: #e0304a;
+  --danger-bg: #fdecef;
+  --warn: #b3690a;
+  --warn-bg: #fdf3e2;
+  --ok: #6425d0;
+  --ok-bg: #f2ecfd;
   --font-sans: "Inter", "Segoe UI", Arial, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
   --radius: 4px;
+  --shadow: 0 1px 2px rgba(20, 10, 50, 0.04);
 }
 
 * { box-sizing: border-box; }
@@ -118,7 +120,7 @@ header h1 {
   background: var(--bg-elevated);
   color: var(--text);
   font-family: var(--font-sans);
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 .filtros input:focus, .filtros select:focus {
@@ -131,7 +133,7 @@ header h1 {
   border: 1px solid var(--primary);
   border-radius: var(--radius);
   background: var(--primary);
-  color: #041a10;
+  color: var(--primary-contrast);
   cursor: pointer;
   font-size: 12px;
   font-weight: 600;
@@ -376,7 +378,7 @@ header h1 {
   padding: 10px 20px;
   border: 1px solid var(--primary);
   background: var(--primary);
-  color: #041a10;
+  color: var(--primary-contrast);
   border-radius: var(--radius);
   cursor: pointer;
   font-size: 12px;
@@ -457,7 +459,7 @@ header h1 {
 
 .check-categoria input { accent-color: var(--primary); }
 
-::selection { background: var(--primary-dim); color: #04140d; }
+::selection { background: var(--accent); color: #ffffff; }
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
