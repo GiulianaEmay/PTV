@@ -13,47 +13,156 @@
     <p class="subtitulo">Resumen simple de KPIs conectado a Loyverse</p>
   </header>
 
-  <section class="filtros">
-    <label>Desde <input type="date" id="from" /></label>
-    <label>Hasta <input type="date" id="to" /></label>
-    <label>Tienda
-      <select id="storeId">
-        <option value="">Todas</option>
-      </select>
-    </label>
-    <button id="btnBuscar">Actualizar</button>
-    <div class="accesos-rapidos">
-      <button data-rango="hoy">Hoy</button>
-      <button data-rango="ayer">Ayer</button>
-      <button data-rango="semana">Ultimos 7 dias</button>
-      <button data-rango="mes">Este mes</button>
+  <nav class="tabs-nav">
+    <button class="tab-btn activa" data-tab="tabKpis">KPIs</button>
+    <button class="tab-btn" data-tab="tabCuadre">Cuadre de Caja</button>
+    <button class="tab-btn" data-tab="tabConfig">Configuracion</button>
+  </nav>
+
+  <!-- ===================== TAB: KPIs ===================== -->
+  <section id="tabKpis" class="tab">
+    <section class="filtros">
+      <label>Desde <input type="date" id="from" /></label>
+      <label>Hasta <input type="date" id="to" /></label>
+      <label>Tienda
+        <select id="storeId">
+          <option value="">Todas</option>
+        </select>
+      </label>
+      <button id="btnBuscar">Actualizar</button>
+      <div class="accesos-rapidos">
+        <button data-rango="hoy">Hoy</button>
+        <button data-rango="ayer">Ayer</button>
+        <button data-rango="semana">Ultimos 7 dias</button>
+        <button data-rango="mes">Este mes</button>
+      </div>
+    </section>
+
+    <p id="mensajeError" class="error oculto"></p>
+    <p id="cargando" class="cargando oculto">Cargando datos de Loyverse...</p>
+
+    <section class="tarjetas" id="tarjetas"></section>
+
+    <section class="graficos">
+      <div class="grafico-card">
+        <h3>Ventas por dia de la semana</h3>
+        <canvas id="chartDiaSemana"></canvas>
+      </div>
+      <div class="grafico-card">
+        <h3>Ventas por hora del dia</h3>
+        <canvas id="chartHora"></canvas>
+      </div>
+      <div class="grafico-card">
+        <h3>Ventas por metodo de pago</h3>
+        <canvas id="chartPago"></canvas>
+      </div>
+      <div class="grafico-card">
+        <h3>Top 10 productos (por unidades vendidas)</h3>
+        <canvas id="chartProductos"></canvas>
+      </div>
+    </section>
+  </section>
+
+  <!-- ===================== TAB: Cuadre de Caja ===================== -->
+  <section id="tabCuadre" class="tab oculto">
+    <section class="filtros">
+      <label>Fecha <input type="date" id="cuadreFecha" /></label>
+      <label>Sucursal
+        <select id="cuadreStoreId"></select>
+      </label>
+      <label>Turno
+        <select id="cuadreTurno"></select>
+      </label>
+      <button id="btnAutocompletar">Cargar ventas de Loyverse</button>
+    </section>
+
+    <p id="cuadreError" class="error oculto"></p>
+    <p id="cuadreCargando" class="cargando oculto">Consultando Loyverse...</p>
+    <p id="cuadreSinMapear" class="aviso oculto"></p>
+
+    <div class="reporte-caja">
+      <div class="reporte-col">
+        <h3>Ingresos (efectivo por categoria)</h3>
+        <table class="tabla-reporte">
+          <thead><tr><th>Detalle</th><th>Efectivo</th></tr></thead>
+          <tbody id="filasIngresos"></tbody>
+          <tfoot><tr><td>Total</td><td id="totalIngresoCelda">0.00</td></tr></tfoot>
+        </table>
+
+        <h3>Sobrante de pan (unidades)</h3>
+        <table class="tabla-reporte">
+          <thead><tr><th>Detalle</th><th>Cantidad</th></tr></thead>
+          <tbody>
+            <tr><td>Piso</td><td><input type="number" step="1" min="0" id="sobrantePiso" value="0" /></td></tr>
+            <tr><td>Variedad</td><td><input type="number" step="1" min="0" id="sobranteVariedad" value="0" /></td></tr>
+            <tr><td>Racion</td><td><input type="number" step="1" min="0" id="sobranteRacion" value="0" /></td></tr>
+            <tr><td>Defectuosos</td><td><input type="number" step="1" min="0" id="sobranteDefectuosos" value="0" /></td></tr>
+          </tbody>
+          <tfoot><tr><td>Total</td><td id="totalSobranteCelda">0</td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="reporte-col">
+        <h3>Egresos (pagos en efectivo desde caja)</h3>
+        <table class="tabla-reporte">
+          <thead><tr><th>Detalle</th><th>Efectivo</th><th></th></tr></thead>
+          <tbody id="filasEgresos"></tbody>
+          <tfoot><tr><td>Total</td><td id="totalEgresoCelda">0.00</td><td></td></tr></tfoot>
+        </table>
+        <button id="btnAgregarEgreso" class="btn-secundario">+ Agregar egreso</button>
+
+        <h3>Resumen</h3>
+        <table class="tabla-reporte">
+          <tbody>
+            <tr><td>Ingreso</td><td id="resumenIngreso">0.00</td></tr>
+            <tr><td>Egreso</td><td id="resumenEgreso">0.00</td></tr>
+            <tr><td><strong>Efectivo</strong></td><td id="resumenEfectivo"><strong>0.00</strong></td></tr>
+          </tbody>
+        </table>
+
+        <h3>Datos del turno</h3>
+        <label>Cajera <input type="text" id="cajera" /></label>
+        <label>Vendedora(s) <input type="text" id="vendedoras" /></label>
+        <label>V.B. Administracion <input type="text" id="vbAdm" /></label>
+        <label>Bolsas quedan <input type="number" min="0" id="bolsasQuedan" /></label>
+
+        <button id="btnGuardarCuadre" class="btn-principal">Guardar cuadre de caja</button>
+        <p id="cuadreGuardadoOk" class="ok oculto">Cuadre guardado correctamente.</p>
+      </div>
+    </div>
+
+    <h3>Historial de cuadres</h3>
+    <div class="tabla-scroll">
+      <table class="tabla-reporte">
+        <thead>
+          <tr><th>Fecha</th><th>Turno</th><th>Sucursal</th><th>Ingreso</th><th>Egreso</th><th>Efectivo</th><th>Cajera</th></tr>
+        </thead>
+        <tbody id="historialCuadres"></tbody>
+      </table>
     </div>
   </section>
 
-  <p id="mensajeError" class="error oculto"></p>
-  <p id="cargando" class="cargando oculto">Cargando datos de Loyverse...</p>
+  <!-- ===================== TAB: Configuracion ===================== -->
+  <section id="tabConfig" class="tab oculto">
+    <h3>Horario de turnos</h3>
+    <p class="ayuda">Define el rango horario de cada turno para poder traer las ventas en efectivo de Loyverse de ese periodo.</p>
+    <table class="tabla-reporte tabla-turnos">
+      <thead><tr><th>Turno</th><th>Inicio</th><th>Fin</th></tr></thead>
+      <tbody id="filasTurnos"></tbody>
+    </table>
+    <button id="btnGuardarTurnos" class="btn-principal">Guardar turnos</button>
+    <p id="turnosGuardadoOk" class="ok oculto">Turnos guardados.</p>
 
-  <section class="tarjetas" id="tarjetas"></section>
-
-  <section class="graficos">
-    <div class="grafico-card">
-      <h3>Ventas por dia de la semana</h3>
-      <canvas id="chartDiaSemana"></canvas>
-    </div>
-    <div class="grafico-card">
-      <h3>Ventas por hora del dia</h3>
-      <canvas id="chartHora"></canvas>
-    </div>
-    <div class="grafico-card">
-      <h3>Ventas por metodo de pago</h3>
-      <canvas id="chartPago"></canvas>
-    </div>
-    <div class="grafico-card">
-      <h3>Top 10 productos (por unidades vendidas)</h3>
-      <canvas id="chartProductos"></canvas>
-    </div>
+    <h3>Mapeo de categorias</h3>
+    <p class="ayuda">Indica que categorias de productos de Loyverse corresponden a cada fila del reporte de caja. Puedes marcar varias categorias por fila.</p>
+    <div id="mapeoCategorias" class="mapeo-categorias"></div>
+    <button id="btnGuardarMapeo" class="btn-principal">Guardar mapeo de categorias</button>
+    <p id="mapeoGuardadoOk" class="ok oculto">Mapeo guardado.</p>
   </section>
 
   <script src="app.js"></script>
+  <script src="cuadre.js"></script>
+  <script src="config.js"></script>
+  <script src="nav.js"></script>
 </body>
 </html>

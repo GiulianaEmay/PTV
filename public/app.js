@@ -37,6 +37,7 @@ async function cargarTiendas() {
   try {
     const res = await fetch("/api/stores");
     const stores = await res.json();
+    if (!res.ok) throw new Error(stores.error || "No se pudieron cargar las tiendas");
     for (const store of stores) {
       const opt = document.createElement("option");
       opt.value = store.id;

@@ -42,6 +42,34 @@ async function getPaymentTypes() {
   return res.data.payment_types || [];
 }
 
+async function getCategories() {
+  const http = client();
+  let cursor;
+  const categorias = [];
+  do {
+    const params = { limit: 250 };
+    if (cursor) params.cursor = cursor;
+    const res = await requestWithRetry(() => http.get("/categories", { params }));
+    categorias.push(...(res.data.categories || []));
+    cursor = res.data.cursor;
+  } while (cursor);
+  return categorias;
+}
+
+async function getAllItems() {
+  const http = client();
+  let cursor;
+  const items = [];
+  do {
+    const params = { limit: 250 };
+    if (cursor) params.cursor = cursor;
+    const res = await requestWithRetry(() => http.get("/items", { params }));
+    items.push(...(res.data.items || []));
+    cursor = res.data.cursor;
+  } while (cursor);
+  return items;
+}
+
 /**
  * Trae todos los recibos del rango de fechas, siguiendo el cursor de paginacion.
  * Loyverse limita a 250 recibos por pagina.
@@ -71,4 +99,4 @@ async function getAllReceipts({ createdAtMin, createdAtMax, storeId, maxPages = 
   return receipts;
 }
 
-module.exports = { getStores, getPaymentTypes, getAllReceipts };
+module.exports = { getStores, getPaymentTypes, getCategories, getAllItems, getAllReceipts };
