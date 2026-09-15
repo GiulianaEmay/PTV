@@ -34,7 +34,9 @@ app.get("/api/kpis", async (req, res) => {
     const createdAtMax = new Date(`${to}T23:59:59Z`).toISOString();
 
     const receipts = await getAllReceipts({ createdAtMin, createdAtMax, storeId });
-    const kpis = calcularKpis(receipts);
+    const { itemCategoria } = await obtenerCatalogo();
+    const categoriasExcluidas = store.leerDB().categoriasExcluidasKpi;
+    const kpis = calcularKpis(receipts, { itemCategoria, categoriasExcluidas });
     res.json({ from, to, storeId: storeId || null, ...kpis });
   } catch (err) {
     handleError(res, err);
@@ -63,6 +65,17 @@ app.get("/api/config/mapeo-categorias", (req, res) => {
 app.post("/api/config/mapeo-categorias", (req, res) => {
   const db = store.leerDB();
   db.mapeoCategorias = req.body || {};
+  store.guardarDB(db);
+  res.json({ ok: true });
+});
+
+app.get("/api/config/categorias-excluidas-kpi", (req, res) => {
+  res.json(store.leerDB().categoriasExcluidasKpi);
+});
+
+app.post("/api/config/categorias-excluidas-kpi", (req, res) => {
+  const db = store.leerDB();
+  db.categoriasExcluidasKpi = Array.isArray(req.body) ? req.body : [];
   store.guardarDB(db);
   res.json({ ok: true });
 });

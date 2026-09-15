@@ -11,6 +11,7 @@ function dbPorDefecto() {
       AM: { inicio: "05:00", fin: "14:30" },
       PM: { inicio: "14:31", fin: "23:59" },
     },
+    categoriasExcluidasKpi: [],
     cuadres: [],
   };
 }

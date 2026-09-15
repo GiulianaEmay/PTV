@@ -63,6 +63,10 @@
         <h3>Top 10 productos (por unidades vendidas)</h3>
         <canvas id="chartProductos"></canvas>
       </div>
+      <div class="grafico-card">
+        <h3>Ventas por categoria (sin categorias excluidas)</h3>
+        <canvas id="chartCategorias"></canvas>
+      </div>
     </section>
   </section>
 
@@ -155,6 +159,12 @@
     </table>
     <button id="btnGuardarTurnos" class="btn-principal">Guardar turnos</button>
     <p id="turnosGuardadoOk" class="ok oculto">Turnos guardados.</p>
+
+    <h3>Categoria mas vendida (KPI)</h3>
+    <p class="ayuda">Marca las categorias que quieres excluir del KPI "Categoria mas vendida" (por ejemplo, Pan, si siempre domina y no aporta al analisis).</p>
+    <div id="categoriasExcluidas" class="mapeo-categorias"></div>
+    <button id="btnGuardarExcluidas" class="btn-principal">Guardar categorias excluidas</button>
+    <p id="excluidasGuardadoOk" class="ok oculto">Guardado.</p>
 
     <h3>Mapeo de categorias</h3>
     <p class="ayuda">Indica que categorias de productos de Loyverse corresponden a cada fila del reporte de caja. Puedes marcar varias categorias por fila.</p>

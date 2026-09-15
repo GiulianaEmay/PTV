@@ -5,7 +5,8 @@ function isVentaValida(receipt) {
   return !receipt.cancelled_at;
 }
 
-function calcularKpis(receipts) {
+function calcularKpis(receipts, opciones = {}) {
+  const { itemCategoria = new Map(), categoriasExcluidas = [] } = opciones;
   const ventas = receipts.filter((r) => isVentaValida(r) && r.receipt_type !== "REFUND");
   const reembolsos = receipts.filter((r) => isVentaValida(r) && r.receipt_type === "REFUND");
 
@@ -52,6 +53,21 @@ function calcularKpis(receipts) {
     .sort((a, b) => b.total - a.total)
     .slice(0, 10);
 
+  const excluidas = new Set(categoriasExcluidas.map((c) => c.toLowerCase()));
+  const categoriasMap = new Map();
+  for (const r of ventas) {
+    for (const li of r.line_items || []) {
+      const categoria = itemCategoria.get(li.item_id) || "Sin categoria";
+      if (excluidas.has(categoria.toLowerCase())) continue;
+      const actual = categoriasMap.get(categoria) || { nombre: categoria, cantidad: 0, total: 0 };
+      actual.cantidad += li.quantity || 0;
+      actual.total += li.total_money ?? li.gross_total_money ?? 0;
+      categoriasMap.set(categoria, actual);
+    }
+  }
+  const ventasPorCategoria = [...categoriasMap.values()].sort((a, b) => b.total - a.total);
+  const categoriaMasVendida = ventasPorCategoria[0] || null;
+
   return {
     totalVentas,
     ventasNetas,
@@ -66,6 +82,8 @@ function calcularKpis(receipts) {
     ventasPorDiaSemana: ventasPorDiaSemana.map((total, i) => ({ dia: DIAS[i], total })),
     productosMasVendidos,
     productosPorIngreso,
+    ventasPorCategoria,
+    categoriaMasVendida,
   };
 }
 

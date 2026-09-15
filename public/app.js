@@ -66,6 +66,12 @@ function renderTarjetas(kpis) {
     { etiqueta: "Descuentos otorgados", valor: formatoMoneda(kpis.totalDescuentos) },
     { etiqueta: "Propinas", valor: formatoMoneda(kpis.totalPropinas) },
     { etiqueta: "Reembolsos", valor: formatoMoneda(kpis.totalReembolsos) },
+    {
+      etiqueta: "Categoria mas vendida (sin excluidas)",
+      valor: kpis.categoriaMasVendida
+        ? `${kpis.categoriaMasVendida.nombre} (${formatoMoneda(kpis.categoriaMasVendida.total)})`
+        : "Sin datos",
+    },
   ];
 
   tarjetas.innerHTML = items
@@ -112,6 +118,15 @@ function renderGraficos(kpis) {
     data: {
       labels: kpis.productosMasVendidos.map((p) => p.nombre),
       datasets: [{ label: "Unidades", data: kpis.productosMasVendidos.map((p) => p.cantidad), backgroundColor: "#a855f7", borderRadius: 2 }],
+    },
+    options: { indexAxis: "y", plugins: { legend: { display: false } }, scales: { x: ejes, y: ejes } },
+  });
+
+  const categorias = kpis.ventasPorCategoria.slice(0, 10);
+  actualizarGrafico("chartCategorias", "bar", {
+    data: {
+      labels: categorias.map((c) => c.nombre),
+      datasets: [{ label: "Ventas", data: categorias.map((c) => c.total), backgroundColor: "#7c3aed", borderRadius: 2 }],
     },
     options: { indexAxis: "y", plugins: { legend: { display: false } }, scales: { x: ejes, y: ejes } },
   });

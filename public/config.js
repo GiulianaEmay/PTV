@@ -1,6 +1,7 @@
 (function () {
   const filasTurnosBody = document.getElementById("filasTurnos");
   const mapeoDiv = document.getElementById("mapeoCategorias");
+  const excluidasDiv = document.getElementById("categoriasExcluidas");
 
   async function cargarTurnos() {
     const turnos = await fetch("/api/config/turnos").then((r) => r.json());
@@ -84,9 +85,50 @@
     setTimeout(() => document.getElementById("mapeoGuardadoOk").classList.add("oculto"), 3000);
   }
 
+  async function cargarExcluidas() {
+    const [categoriasRes, excluidasRes] = await Promise.all([
+      fetch("/api/categorias-loyverse"),
+      fetch("/api/config/categorias-excluidas-kpi"),
+    ]);
+    const categorias = await categoriasRes.json();
+    const excluidas = await excluidasRes.json();
+
+    if (!categoriasRes.ok) {
+      excluidasDiv.innerHTML = `<p class="error">${categorias.error || "No se pudieron cargar las categorias de Loyverse"}</p>`;
+      return;
+    }
+
+    const seleccionadas = new Set(excluidas || []);
+    excluidasDiv.innerHTML = `
+      <div class="mapeo-checks">
+        ${categorias
+          .map(
+            (cat) => `
+            <label class="check-categoria">
+              <input type="checkbox" value="${cat}" ${seleccionadas.has(cat) ? "checked" : ""} />
+              ${cat}
+            </label>`
+          )
+          .join("")}
+      </div>`;
+  }
+
+  async function guardarExcluidas() {
+    const excluidas = [...excluidasDiv.querySelectorAll("input[type=checkbox]:checked")].map((c) => c.value);
+    await fetch("/api/config/categorias-excluidas-kpi", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(excluidas),
+    });
+    document.getElementById("excluidasGuardadoOk").classList.remove("oculto");
+    setTimeout(() => document.getElementById("excluidasGuardadoOk").classList.add("oculto"), 3000);
+  }
+
   document.getElementById("btnGuardarTurnos").addEventListener("click", guardarTurnos);
   document.getElementById("btnGuardarMapeo").addEventListener("click", guardarMapeo);
+  document.getElementById("btnGuardarExcluidas").addEventListener("click", guardarExcluidas);
 
   cargarTurnos();
   cargarMapeo();
+  cargarExcluidas();
 })();
