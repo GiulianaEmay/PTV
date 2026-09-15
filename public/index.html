@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KPIs de Ventas - Cafeteria</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Panel de Ventas</h1>
+    <p class="subtitulo">Resumen simple de KPIs conectado a Loyverse</p>
+  </header>
+
+  <section class="filtros">
+    <label>Desde <input type="date" id="from" /></label>
+    <label>Hasta <input type="date" id="to" /></label>
+    <label>Tienda
+      <select id="storeId">
+        <option value="">Todas</option>
+      </select>
+    </label>
+    <button id="btnBuscar">Actualizar</button>
+    <div class="accesos-rapidos">
+      <button data-rango="hoy">Hoy</button>
+      <button data-rango="ayer">Ayer</button>
+      <button data-rango="semana">Ultimos 7 dias</button>
+      <button data-rango="mes">Este mes</button>
+    </div>
+  </section>
+
+  <p id="mensajeError" class="error oculto"></p>
+  <p id="cargando" class="cargando oculto">Cargando datos de Loyverse...</p>
+
+  <section class="tarjetas" id="tarjetas"></section>
+
+  <section class="graficos">
+    <div class="grafico-card">
+      <h3>Ventas por dia de la semana</h3>
+      <canvas id="chartDiaSemana"></canvas>
+    </div>
+    <div class="grafico-card">
+      <h3>Ventas por hora del dia</h3>
+      <canvas id="chartHora"></canvas>
+    </div>
+    <div class="grafico-card">
+      <h3>Ventas por metodo de pago</h3>
+      <canvas id="chartPago"></canvas>
+    </div>
+    <div class="grafico-card">
+      <h3>Top 10 productos (por unidades vendidas)</h3>
+      <canvas id="chartProductos"></canvas>
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>

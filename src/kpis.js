@@ -1,0 +1,85 @@
+const DIAS = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
+
+function isVentaValida(receipt) {
+  // Se excluyen recibos cancelados; los reembolsos se contabilizan aparte
+  return !receipt.cancelled_at;
+}
+
+function calcularKpis(receipts) {
+  const ventas = receipts.filter((r) => isVentaValida(r) && r.receipt_type !== "REFUND");
+  const reembolsos = receipts.filter((r) => isVentaValida(r) && r.receipt_type === "REFUND");
+
+  const totalVentas = sum(ventas, (r) => r.total_money);
+  const totalReembolsos = sum(reembolsos, (r) => Math.abs(r.total_money));
+  const totalDescuentos = sum(ventas, (r) => r.total_discount);
+  const totalPropinas = sum(ventas, (r) => r.tip);
+  const totalImpuestos = sum(ventas, (r) => r.total_tax);
+  const numeroTickets = ventas.length;
+  const ticketPromedio = numeroTickets > 0 ? totalVentas / numeroTickets : 0;
+  const ventasNetas = totalVentas - totalReembolsos;
+
+  const ventasPorMetodoPago = agrupar(
+    ventas.flatMap((r) => r.payments || []),
+    (p) => p.name || "Desconocido",
+    (p) => p.money_amount
+  );
+
+  const ventasPorHora = new Array(24).fill(0);
+  const ventasPorDiaSemana = new Array(7).fill(0);
+  for (const r of ventas) {
+    const fecha = new Date(r.receipt_date);
+    if (!isNaN(fecha)) {
+      ventasPorHora[fecha.getHours()] += r.total_money || 0;
+      ventasPorDiaSemana[fecha.getDay()] += r.total_money || 0;
+    }
+  }
+
+  const productosMap = new Map();
+  for (const r of ventas) {
+    for (const li of r.line_items || []) {
+      const key = li.item_name || "Sin nombre";
+      const actual = productosMap.get(key) || { nombre: key, cantidad: 0, total: 0 };
+      actual.cantidad += li.quantity || 0;
+      actual.total += li.total_money ?? li.gross_total_money ?? 0;
+      productosMap.set(key, actual);
+    }
+  }
+  const productosMasVendidos = [...productosMap.values()]
+    .sort((a, b) => b.cantidad - a.cantidad)
+    .slice(0, 10);
+
+  const productosPorIngreso = [...productosMap.values()]
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 10);
+
+  return {
+    totalVentas,
+    ventasNetas,
+    totalReembolsos,
+    totalDescuentos,
+    totalPropinas,
+    totalImpuestos,
+    numeroTickets,
+    ticketPromedio,
+    ventasPorMetodoPago,
+    ventasPorHora,
+    ventasPorDiaSemana: ventasPorDiaSemana.map((total, i) => ({ dia: DIAS[i], total })),
+    productosMasVendidos,
+    productosPorIngreso,
+  };
+}
+
+function sum(arr, fn) {
+  return arr.reduce((acc, item) => acc + (fn(item) || 0), 0);
+}
+
+function agrupar(arr, keyFn, valueFn) {
+  const map = new Map();
+  for (const item of arr) {
+    const key = keyFn(item);
+    map.set(key, (map.get(key) || 0) + (valueFn(item) || 0));
+  }
+  return [...map.entries()].map(([nombre, total]) => ({ nombre, total }));
+}
+
+module.exports = { calcularKpis };
