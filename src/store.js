@@ -8,8 +8,8 @@ function dbPorDefecto() {
   return {
     mapeoCategorias: Object.fromEntries(FILAS_INGRESOS.map((f) => [f, []])),
     turnos: {
-      AM: { inicio: "06:00", fin: "14:00" },
-      PM: { inicio: "14:00", fin: "22:00" },
+      AM: { inicio: "05:00", fin: "14:30" },
+      PM: { inicio: "14:31", fin: "23:59" },
     },
     cuadres: [],
   };
