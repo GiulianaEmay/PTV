@@ -1,17 +1,17 @@
 const { getCategories, getAllItems } = require("./loyverseClient");
 
 const TTL_MS = 5 * 60 * 1000;
-let cache = null;
-let expiraEn = 0;
+const cachePorEmpresa = new Map();
 
 /**
- * Catalogo de Loyverse: nombres de categorias e indice item_id -> nombre de categoria.
- * Se cachea unos minutos para no golpear la API en cada autocompletado.
+ * Catalogo de Loyverse de una empresa: nombres de categorias e indice
+ * item_id -> nombre de categoria. Se cachea unos minutos por empresa.
  */
-async function obtenerCatalogo() {
-  if (cache && Date.now() < expiraEn) return cache;
+async function obtenerCatalogo(empresaId, token) {
+  const entrada = cachePorEmpresa.get(empresaId);
+  if (entrada && Date.now() < entrada.expiraEn) return entrada.datos;
 
-  const [categorias, items] = await Promise.all([getCategories(), getAllItems()]);
+  const [categorias, items] = await Promise.all([getCategories(token), getAllItems(token)]);
   const nombrePorCategoriaId = new Map(categorias.map((c) => [c.id, c.name]));
 
   const itemCategoria = new Map();
@@ -20,9 +20,9 @@ async function obtenerCatalogo() {
     if (nombreCategoria) itemCategoria.set(item.id, nombreCategoria);
   }
 
-  cache = { categorias: categorias.map((c) => c.name), itemCategoria };
-  expiraEn = Date.now() + TTL_MS;
-  return cache;
+  const datos = { categorias: categorias.map((c) => c.name), itemCategoria };
+  cachePorEmpresa.set(empresaId, { datos, expiraEn: Date.now() + TTL_MS });
+  return datos;
 }
 
 module.exports = { obtenerCatalogo };

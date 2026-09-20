@@ -43,6 +43,43 @@ header {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
+}
+
+header .titulos { flex: 1 1 auto; }
+
+.sesion-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  flex-wrap: wrap;
+}
+
+.sesion-info select {
+  padding: 7px 9px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
+.sesion-empresa {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.sesion-email {
+  color: var(--muted);
+}
+
+.sesion-info .btn-secundario {
+  margin-top: 0;
+  padding: 7px 14px;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .logo-marca {
@@ -463,6 +500,67 @@ header h1 {
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 5px; }
+
+.empresa-fila-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.empresa-fila-top strong { font-size: 14px; }
+
+.empresa-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.empresa-campo input {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  color: var(--text);
+}
+
+.empresa-usuarios {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.empresa-usuarios-titulo {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.lista-usuarios {
+  margin: 0 0 12px;
+  padding-left: 18px;
+  font-size: 13px;
+}
+
+.nuevo-usuario {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.nuevo-usuario input {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  flex: 1 1 160px;
+}
 
 @media (max-width: 800px) {
   .reporte-caja { grid-template-columns: 1fr; }

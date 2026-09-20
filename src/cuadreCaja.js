@@ -24,13 +24,13 @@ function construirIndiceCategoriaFila(mapeoCategorias) {
  * Los pagos con metodo distinto a efectivo (tarjeta, etc.) no se cuentan.
  * Si un recibo tuvo pago mixto, se prorratea el efectivo entre sus lineas.
  */
-async function autocompletarIngresos({ fecha, storeId, ventanaTurno, mapeoCategorias }) {
+async function autocompletarIngresos({ empresaId, token, fecha, storeId, ventanaTurno, mapeoCategorias }) {
   const inicio = new Date(`${fecha}T${ventanaTurno.inicio}:00`);
   const fin = new Date(`${fecha}T${ventanaTurno.fin}:00`);
 
   const [receipts, catalogo] = await Promise.all([
-    getAllReceipts({ createdAtMin: inicio.toISOString(), createdAtMax: fin.toISOString(), storeId }),
-    obtenerCatalogo(),
+    getAllReceipts(token, { createdAtMin: inicio.toISOString(), createdAtMax: fin.toISOString(), storeId }),
+    obtenerCatalogo(empresaId, token),
   ]);
 
   const indiceCategoriaFila = construirIndiceCategoriaFila(mapeoCategorias);

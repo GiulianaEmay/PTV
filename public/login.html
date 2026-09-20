@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Iniciar sesion - Emay Tech</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body class="pagina-login">
+  <form class="login-card" id="formLogin">
+    <div class="logo-marca"></div>
+    <h1>Emay Tech</h1>
+    <p>Ingresa con la cuenta que te dio tu proveedor</p>
+    <label>Correo</label>
+    <input type="email" id="email" required autocomplete="username" />
+    <label>Contrasena</label>
+    <input type="password" id="password" required autocomplete="current-password" />
+    <p id="loginError" class="error oculto"></p>
+    <button type="submit" class="btn-principal">Entrar</button>
+  </form>
+  <script src="login.js"></script>
+</body>
+</html>

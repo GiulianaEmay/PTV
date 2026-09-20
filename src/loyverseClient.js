@@ -2,12 +2,9 @@ const axios = require("axios");
 
 const BASE_URL = "https://api.loyverse.com/v1.0";
 
-function client() {
-  const token = process.env.LOYVERSE_ACCESS_TOKEN;
+function client(token) {
   if (!token) {
-    throw new Error(
-      "Falta LOYVERSE_ACCESS_TOKEN. Configuralo en el archivo .env"
-    );
+    throw new Error("Esta empresa no tiene un token de Loyverse configurado todavia.");
   }
   return axios.create({
     baseURL: BASE_URL,
@@ -30,20 +27,20 @@ async function requestWithRetry(fn, retries = 3) {
   }
 }
 
-async function getStores() {
-  const http = client();
+async function getStores(token) {
+  const http = client(token);
   const res = await requestWithRetry(() => http.get("/stores"));
   return res.data.stores || [];
 }
 
-async function getPaymentTypes() {
-  const http = client();
+async function getPaymentTypes(token) {
+  const http = client(token);
   const res = await requestWithRetry(() => http.get("/payment_types"));
   return res.data.payment_types || [];
 }
 
-async function getCategories() {
-  const http = client();
+async function getCategories(token) {
+  const http = client(token);
   let cursor;
   const categorias = [];
   do {
@@ -56,8 +53,8 @@ async function getCategories() {
   return categorias;
 }
 
-async function getAllItems() {
-  const http = client();
+async function getAllItems(token) {
+  const http = client(token);
   let cursor;
   const items = [];
   do {
@@ -74,8 +71,8 @@ async function getAllItems() {
  * Trae todos los recibos del rango de fechas, siguiendo el cursor de paginacion.
  * Loyverse limita a 250 recibos por pagina.
  */
-async function getAllReceipts({ createdAtMin, createdAtMax, storeId, maxPages = 40 }) {
-  const http = client();
+async function getAllReceipts(token, { createdAtMin, createdAtMax, storeId, maxPages = 40 }) {
+  const http = client(token);
   let cursor = undefined;
   let page = 0;
   const receipts = [];

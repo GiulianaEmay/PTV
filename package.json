@@ -1,7 +1,7 @@
 {
-  "name": "cuadrefacil",
+  "name": "emay-tech-ptv",
   "version": "1.0.0",
-  "description": "CuadreFacil: KPIs de ventas y cuadre de caja para negocios que usan Loyverse POS",
+  "description": "Emay Tech (PTV): KPIs de ventas y cuadre de caja multi-cliente para negocios que usan Loyverse POS",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
@@ -10,9 +10,14 @@
   },
   "keywords": ["loyverse", "pos", "kpi", "dashboard", "ventas", "cuadre-de-caja"],
   "license": "BUSL-1.1",
+  "engines": {
+    "node": ">=22.5.0"
+  },
   "dependencies": {
     "axios": "^1.7.9",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "express-session": "^1.18.1"
   }
 }

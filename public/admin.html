@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Emay Tech</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <div class="logo-marca"></div>
+    <div class="titulos">
+      <h1>Emay Tech · Admin</h1>
+      <p class="subtitulo">Gestion de empresas clientes y sus usuarios</p>
+    </div>
+    <div id="sesionInfo" class="sesion-info"></div>
+  </header>
+
+  <section class="tab">
+    <h3>Nueva empresa</h3>
+    <div class="filtros">
+      <label>Nombre del negocio <input type="text" id="nuevaEmpresaNombre" placeholder="Panaderia La Flor" /></label>
+      <label>Token de Loyverse <input type="text" id="nuevaEmpresaToken" placeholder="Opcional, se puede agregar despues" /></label>
+      <button id="btnCrearEmpresa">Crear empresa</button>
+    </div>
+    <p id="crearEmpresaError" class="error oculto"></p>
+
+    <h3>Empresas</h3>
+    <div id="listaEmpresas" class="mapeo-categorias"></div>
+  </section>
+
+  <script src="session.js"></script>
+  <script src="topbar.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
