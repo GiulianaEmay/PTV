@@ -1,6 +1,8 @@
-# Loyverse KPI Dashboard
+# CuadreFacil
 
-Dashboard simple para interpretar las ventas de una cafeteria que usa **Loyverse POS**, mostrando los KPIs mas importantes sin tener que revisar los reportes complejos de Loyverse.
+Dashboard simple para interpretar las ventas de un negocio que usa **Loyverse POS**, mostrando los KPIs mas importantes y digitalizando el cuadre de caja, sin tener que revisar los reportes complejos de Loyverse.
+
+> **Licencia:** este proyecto usa Business Source License 1.1 (ver [LICENSE](LICENSE)): puedes verlo, auto-hospedarlo y usarlo para tu propio negocio, pero no revenderlo como servicio SaaS competidor. **Antes de publicar el repo, reemplaza el marcador `[NOMBRE COMPLETO DEL TITULAR]` en `LICENSE` con el nombre real del titular del copyright.**
 
 ## KPIs incluidos
 
