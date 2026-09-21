@@ -165,15 +165,10 @@ header .titulos { flex: 1 1 auto; min-width: 0; }
   width: 32px;
   height: 32px;
   border-radius: 9px;
-  background: linear-gradient(160deg, #1c1e54, var(--primary));
+  background-image: url("assets/emay-logo.png");
+  background-size: cover;
+  background-position: center;
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 15px;
-  letter-spacing: -0.02em;
 }
 
 /* Autocompletado del navegador: por defecto Chrome pinta el fondo del
