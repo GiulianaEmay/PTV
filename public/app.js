@@ -1,6 +1,7 @@
 const fromInput = document.getElementById("from");
 const toInput = document.getElementById("to");
 const storeSelect = document.getElementById("storeId");
+const excluirPanInput = document.getElementById("excluirPan");
 const mensajeError = document.getElementById("mensajeError");
 const cargando = document.getElementById("cargando");
 
@@ -136,6 +137,9 @@ function actualizarGrafico(id, tipo, config) {
 
 function renderGraficos(kpis) {
   const ejes = { grid: { color: "#e3e8ee" }, ticks: { color: "#64748d" } };
+  const sufijo = excluirPanInput.checked ? " (sin pan)" : "";
+  document.getElementById("tituloTopProductos").textContent = `Top 10 productos (por unidades vendidas)${sufijo}`;
+  document.getElementById("tituloVentasCategoria").textContent = `Ventas por categoria${sufijo}`;
 
   actualizarGrafico("chartDiaSemana", "bar", {
     data: {
@@ -177,6 +181,14 @@ function renderGraficos(kpis) {
     },
     options: { indexAxis: "y", plugins: { legend: { display: false } }, scales: { x: ejes, y: ejes } },
   });
+
+  actualizarGrafico("chartEmpleados", "bar", {
+    data: {
+      labels: kpis.ventasPorEmpleado.map((e) => e.nombre),
+      datasets: [{ label: "Ventas", data: kpis.ventasPorEmpleado.map((e) => e.total), backgroundColor: "#ea2261", borderRadius: 2 }],
+    },
+    options: { indexAxis: "y", plugins: { legend: { display: false } }, scales: { x: ejes, y: ejes } },
+  });
 }
 
 async function cargarKpis() {
@@ -185,6 +197,7 @@ async function cargarKpis() {
   try {
     const params = new URLSearchParams({ from: fromInput.value, to: toInput.value });
     if (storeSelect.value) params.set("storeId", storeSelect.value);
+    if (excluirPanInput.checked) params.set("excluirPan", "true");
 
     const res = await fetch(`/api/kpis?${params.toString()}`);
     const data = await res.json();
@@ -204,6 +217,7 @@ document.getElementById("btnBuscar").addEventListener("click", cargarKpis);
 document.querySelectorAll(".accesos-rapidos button").forEach((btn) => {
   btn.addEventListener("click", () => setRango(btn.dataset.rango));
 });
+excluirPanInput.addEventListener("change", cargarKpis);
 
 cargarTiendas();
 setRango("semana");

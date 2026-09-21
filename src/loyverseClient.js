@@ -53,6 +53,20 @@ async function getCategories(token) {
   return categorias;
 }
 
+async function getEmployees(token) {
+  const http = client(token);
+  let cursor;
+  const empleados = [];
+  do {
+    const params = { limit: 250 };
+    if (cursor) params.cursor = cursor;
+    const res = await requestWithRetry(() => http.get("/employees", { params }));
+    empleados.push(...(res.data.employees || []));
+    cursor = res.data.cursor;
+  } while (cursor);
+  return empleados;
+}
+
 async function getAllItems(token) {
   const http = client(token);
   let cursor;
@@ -96,4 +110,4 @@ async function getAllReceipts(token, { createdAtMin, createdAtMax, storeId, maxP
   return receipts;
 }
 
-module.exports = { getStores, getPaymentTypes, getCategories, getAllItems, getAllReceipts };
+module.exports = { getStores, getPaymentTypes, getCategories, getAllItems, getEmployees, getAllReceipts };

@@ -1,6 +1,7 @@
 const { aInstantePeru } = require("./zonaHoraria");
 
 const DIAS = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
+const REGEX_PAN = /\bpan\b/i;
 
 function isVentaValida(receipt) {
   // Se excluyen recibos cancelados; los reembolsos se contabilizan aparte
@@ -8,7 +9,7 @@ function isVentaValida(receipt) {
 }
 
 function calcularKpis(receipts, opciones = {}) {
-  const { itemCategoria = new Map(), categoriasExcluidas = [] } = opciones;
+  const { itemCategoria = new Map(), nombreEmpleado = new Map(), categoriasExcluidas = [], excluirPan = false } = opciones;
   const ventas = receipts.filter((r) => isVentaValida(r) && r.receipt_type !== "REFUND");
   const reembolsos = receipts.filter((r) => isVentaValida(r) && r.receipt_type === "REFUND");
 
@@ -26,6 +27,16 @@ function calcularKpis(receipts, opciones = {}) {
     (p) => p.name || "Desconocido",
     (p) => p.money_amount
   );
+
+  const empleadosMap = new Map();
+  for (const r of ventas) {
+    const nombre = nombreEmpleado.get(r.employee_id) || "Sin asignar";
+    const actual = empleadosMap.get(nombre) || { nombre, total: 0, tickets: 0 };
+    actual.total += r.total_money || 0;
+    actual.tickets += 1;
+    empleadosMap.set(nombre, actual);
+  }
+  const ventasPorEmpleado = [...empleadosMap.values()].sort((a, b) => b.total - a.total);
 
   const ventasPorHora = new Array(24).fill(0);
   const ventasPorDiaSemana = new Array(7).fill(0);
@@ -48,13 +59,11 @@ function calcularKpis(receipts, opciones = {}) {
       productosMap.set(key, actual);
     }
   }
-  const productosMasVendidos = [...productosMap.values()]
-    .sort((a, b) => b.cantidad - a.cantidad)
-    .slice(0, 10);
+  let productos = [...productosMap.values()];
+  if (excluirPan) productos = productos.filter((p) => !REGEX_PAN.test(p.nombre));
 
-  const productosPorIngreso = [...productosMap.values()]
-    .sort((a, b) => b.total - a.total)
-    .slice(0, 10);
+  const productosMasVendidos = [...productos].sort((a, b) => b.cantidad - a.cantidad).slice(0, 10);
+  const productosPorIngreso = [...productos].sort((a, b) => b.total - a.total).slice(0, 10);
 
   const excluidas = new Set(categoriasExcluidas.map((c) => c.toLowerCase()));
   const categoriasMap = new Map();
@@ -62,6 +71,7 @@ function calcularKpis(receipts, opciones = {}) {
     for (const li of r.line_items || []) {
       const categoria = itemCategoria.get(li.item_id) || "Sin categoria";
       if (excluidas.has(categoria.toLowerCase())) continue;
+      if (excluirPan && REGEX_PAN.test(categoria)) continue;
       const actual = categoriasMap.get(categoria) || { nombre: categoria, cantidad: 0, total: 0 };
       actual.cantidad += li.quantity || 0;
       actual.total += li.total_money ?? li.gross_total_money ?? 0;
@@ -81,6 +91,7 @@ function calcularKpis(receipts, opciones = {}) {
     numeroTickets,
     ticketPromedio,
     ventasPorMetodoPago,
+    ventasPorEmpleado,
     ventasPorHora,
     ventasPorDiaSemana: ventasPorDiaSemana.map((total, i) => ({ dia: DIAS[i], total })),
     productosMasVendidos,

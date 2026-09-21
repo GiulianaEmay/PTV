@@ -278,10 +278,35 @@ header h1 {
 
 .graficos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
   gap: 16px;
-  padding: 8px 32px 40px;
+  padding: 8px 32px 0;
 }
+
+.graficos:last-of-type { padding-bottom: 40px; }
+
+.graficos-3col { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.graficos-2col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+@media (max-width: 960px) {
+  .graficos-3col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .graficos-3col, .graficos-2col { grid-template-columns: 1fr; }
+}
+
+.toggle-excluir-pan {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  padding-bottom: 2px;
+}
+
+.toggle-excluir-pan input { accent-color: var(--primary); width: 16px; height: 16px; }
 
 .grafico-card {
   background: var(--card-bg);

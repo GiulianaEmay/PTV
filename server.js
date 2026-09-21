@@ -122,7 +122,7 @@ app.get("/api/stores", requireAuth, requireEmpresaSeleccionada, async (req, res)
 
 app.get("/api/kpis", requireAuth, requireEmpresaSeleccionada, async (req, res) => {
   try {
-    const { from, to, storeId } = req.query;
+    const { from, to, storeId, excluirPan } = req.query;
     if (!from || !to) {
       return res.status(400).json({ error: "Los parametros 'from' y 'to' son obligatorios (YYYY-MM-DD)" });
     }
@@ -132,8 +132,13 @@ app.get("/api/kpis", requireAuth, requireEmpresaSeleccionada, async (req, res) =
     const createdAtMax = new Date(`${to}T23:59:59${OFFSET_PERU}`).toISOString();
 
     const receipts = await getAllReceipts(empresa.loyverseToken, { createdAtMin, createdAtMax, storeId });
-    const { itemCategoria } = await obtenerCatalogo(empresa.id, empresa.loyverseToken);
-    const kpis = calcularKpis(receipts, { itemCategoria, categoriasExcluidas: empresa.categoriasExcluidasKpi });
+    const { itemCategoria, nombreEmpleado } = await obtenerCatalogo(empresa.id, empresa.loyverseToken);
+    const kpis = calcularKpis(receipts, {
+      itemCategoria,
+      nombreEmpleado,
+      categoriasExcluidas: empresa.categoriasExcluidasKpi,
+      excluirPan: excluirPan === "true",
+    });
     res.json({ from, to, storeId: storeId || null, ...kpis });
   } catch (err) {
     handleError(res, err);
