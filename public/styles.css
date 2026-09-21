@@ -167,6 +167,25 @@ header .titulos { flex: 1 1 auto; min-width: 0; }
   border-radius: 9px;
   background: linear-gradient(160deg, #1c1e54, var(--primary));
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+}
+
+/* Autocompletado del navegador: por defecto Chrome pinta el fondo del
+   input de celeste/amarillo. Se fuerza a blanco para que combine con el
+   resto de los inputs. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text);
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+  box-shadow: 0 0 0 1000px #ffffff inset;
+  transition: background-color 9999s ease-in-out 0s;
 }
 
 header h1 {
