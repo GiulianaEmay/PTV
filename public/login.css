@@ -1,103 +1,210 @@
 .pagina-login {
-  position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
   min-height: 100vh;
-  overflow: hidden;
-  background: linear-gradient(160deg, #f4f3fd 0%, #fbfbff 45%, #f0eefc 100%);
 }
 
-/* --- Formas decorativas de fondo --- */
+/* ============ Panel izquierdo (hero oscuro) ============ */
 
-.blob {
+.panel-hero {
+  position: relative;
+  overflow: hidden;
+  flex: 1 1 46%;
+  background: linear-gradient(160deg, #14123f 0%, #241f6b 45%, #4f3fe0 100%);
+  color: #ffffff;
+  padding: 40px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.hero-blob {
   position: absolute;
   border-radius: 50%;
-  z-index: 0;
   pointer-events: none;
-}
-
-.blob-superior {
-  top: -180px;
-  left: -180px;
-  width: 480px;
-  height: 480px;
-  background: radial-gradient(circle at 35% 35%, var(--primary-soft-strong), var(--primary) 60%, #1c1e54 100%);
-  border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%;
-  opacity: 0.95;
-}
-
-.blob-inferior {
-  bottom: -220px;
-  right: -200px;
-  width: 460px;
-  height: 460px;
-  background: radial-gradient(circle at 65% 65%, var(--primary-soft), var(--primary-soft-strong) 70%);
-  border-radius: 55% 45% 35% 65% / 55% 65% 35% 45%;
-  opacity: 0.5;
-}
-
-.linea-decorativa {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
   z-index: 0;
-  pointer-events: none;
 }
 
-.ilustracion-pos {
-  position: absolute;
-  right: 6%;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 260px;
-  height: auto;
-  color: var(--primary);
-  opacity: 0.14;
-  z-index: 0;
-  pointer-events: none;
+.hero-blob-1 {
+  top: -140px;
+  left: -140px;
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle at 40% 40%, rgba(94, 122, 255, 0.55), transparent 70%);
+}
+
+.hero-blob-2 {
+  bottom: -160px;
+  right: -120px;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle at 60% 60%, rgba(249, 107, 238, 0.28), transparent 70%);
+}
+
+.hero-marca, .hero-texto, .hero-mockup, .hero-features {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero-marca .logo-marca { width: 52px; height: 52px; border-radius: 13px; }
+
+.hero-marca h2 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.hero-etiqueta {
+  margin: 1px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.texto-claro { color: var(--primary-soft-strong); }
+
+.hero-texto { margin-top: 8px; }
+
+.hero-texto h1 {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 12px;
+}
+
+.hero-texto p {
+  font-size: 14.5px;
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 380px;
+  margin: 0;
+}
+
+.hero-mockup {
+  margin-top: auto;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  padding: 18px;
+  backdrop-filter: blur(6px);
+}
+
+.mockup-fila {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.mockup-producto {
+  height: 46px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.mockup-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 14px 0 12px;
+  color: #ffffff;
+}
+
+.mockup-total span { font-size: 12px; color: rgba(255, 255, 255, 0.6); }
+.mockup-total strong { font-size: 20px; font-variant-numeric: tabular-nums; }
+
+.mockup-boton {
+  background: linear-gradient(90deg, var(--primary), var(--primary-soft-strong));
+  color: #ffffff;
+  text-align: center;
+  padding: 10px;
+  border-radius: 9px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.hero-features {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hero-feature {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.3;
+}
+
+.hero-feature svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--primary-soft-strong);
 }
 
 @media (max-width: 900px) {
-  .ilustracion-pos { display: none; }
+  .panel-hero { display: none; }
 }
 
-/* --- Tarjeta --- */
+/* ============ Panel derecho (formulario) ============ */
+
+.panel-form {
+  flex: 1 1 54%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: linear-gradient(160deg, #f4f3fd 0%, #fbfbff 45%, #f0eefc 100%);
+}
+
+.panel-form-etiqueta {
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin: 0 0 20px;
+}
+
+.etiqueta-linea {
+  width: 32px;
+  height: 1px;
+  background: var(--border-strong);
+}
+
+@media (max-width: 900px) {
+  .panel-form-etiqueta { display: none; }
+}
 
 .login-card {
   position: relative;
-  z-index: 1;
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 20px;
   box-shadow: 0 24px 60px rgba(28, 30, 84, 0.14);
-  padding: 44px 40px;
+  padding: 40px 40px 32px;
   width: 440px;
   max-width: calc(100vw - 32px);
 }
 
-.logo-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 22px;
-}
+.logo-wrap-movil { display: none; margin-bottom: 18px; }
 
-.login-card .logo-marca {
-  width: 56px;
-  height: 56px;
-  font-size: 19px;
-  border-radius: 14px;
-  box-shadow: 0 10px 24px rgba(83, 58, 253, 0.35);
-}
-
-.logo-linea {
-  width: 32px;
-  height: 3px;
-  border-radius: 2px;
-  margin-top: 8px;
-  background: linear-gradient(90deg, var(--primary), var(--accent-2));
+@media (max-width: 900px) {
+  .logo-wrap-movil { display: flex; }
+  .logo-wrap-movil .logo-marca { width: 48px; height: 48px; border-radius: 12px; }
 }
 
 .login-card h1 {
@@ -119,7 +226,7 @@
 .login-card > p {
   color: var(--muted);
   font-size: 13.5px;
-  margin: 0 0 26px;
+  margin: 0 0 24px;
 }
 
 .login-card label {
@@ -132,7 +239,7 @@
 
 .campo-icono {
   position: relative;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .campo-icono svg {
@@ -163,9 +270,46 @@
   box-shadow: 0 0 0 3px var(--primary-soft);
 }
 
+#password { padding-right: 38px; }
+
+.btn-ver-clave {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+}
+
+.btn-ver-clave svg { width: 18px; height: 18px; }
+.btn-ver-clave:hover { color: var(--text); }
+
+.fila-opciones {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 2px 0 18px;
+}
+
+.check-recordar {
+  display: flex !important;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px !important;
+  color: var(--muted);
+  margin: 0 !important;
+  cursor: pointer;
+}
+
+.check-recordar input { accent-color: var(--primary); width: 15px; height: 15px; }
+
 .btn-entrar {
   width: 100%;
-  margin-top: 6px;
+  margin-top: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -186,8 +330,67 @@
 
 .login-card .error { margin-bottom: 16px; }
 
+.login-footer { margin-top: 24px; }
+
+.login-footer-linea {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.login-footer-linea span {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.login-seguridad {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 18px;
+}
+
+.login-seguridad svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.login-contactos {
+  background: var(--card-bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.contactos-titulo {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.contacto-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 5px 0;
+}
+
+.contacto-item strong { color: var(--text); font-weight: 600; }
+.contacto-item svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--primary); }
+.contacto-item:hover span { color: var(--primary); }
+
 @media (max-width: 480px) {
-  .login-card { padding: 32px 24px; width: 100%; }
+  .login-card { padding: 28px 22px; width: 100%; }
   .login-card h1 { font-size: 21px; }
-  .blob-superior, .blob-inferior { width: 320px; height: 320px; }
+  .panel-form { padding: 20px; }
 }

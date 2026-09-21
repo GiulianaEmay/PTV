@@ -1,3 +1,8 @@
+document.getElementById("btnVerClave").addEventListener("click", () => {
+  const campo = document.getElementById("password");
+  campo.type = campo.type === "password" ? "text" : "password";
+});
+
 document.getElementById("formLogin").addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("email").value;
