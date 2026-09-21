@@ -124,6 +124,20 @@
     setTimeout(() => document.getElementById("excluidasGuardadoOk").classList.add("oculto"), 3000);
   }
 
+  async function cargarSucursales() {
+    const lista = document.getElementById("listaSucursales");
+    try {
+      const res = await fetch("/api/stores");
+      const tiendas = await res.json();
+      if (!res.ok) throw new Error(tiendas.error || "No se pudieron cargar las sucursales");
+      lista.innerHTML = tiendas.length
+        ? tiendas.map((t) => `<li>${t.name}</li>`).join("")
+        : "<li><em>No hay sucursales registradas en Loyverse todavia.</em></li>";
+    } catch (err) {
+      lista.innerHTML = `<li class="error">${err.message}</li>`;
+    }
+  }
+
   document.getElementById("btnGuardarTurnos").addEventListener("click", guardarTurnos);
   document.getElementById("btnGuardarMapeo").addEventListener("click", guardarMapeo);
   document.getElementById("btnGuardarExcluidas").addEventListener("click", guardarExcluidas);
@@ -131,4 +145,5 @@
   cargarTurnos();
   cargarMapeo();
   cargarExcluidas();
+  cargarSucursales();
 })();

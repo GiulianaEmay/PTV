@@ -48,4 +48,14 @@ db.exec(`
   );
 `);
 
+// Migracion simple: agrega columnas nuevas a bases de datos creadas antes
+// de que existieran (ALTER TABLE ADD COLUMN falla si la columna ya existe).
+const columnasCuadres = db.prepare("PRAGMA table_info(cuadres)").all().map((c) => c.name);
+if (!columnasCuadres.includes("efectivo_contado")) {
+  db.exec("ALTER TABLE cuadres ADD COLUMN efectivo_contado REAL");
+}
+if (!columnasCuadres.includes("diferencia")) {
+  db.exec("ALTER TABLE cuadres ADD COLUMN diferencia REAL");
+}
+
 module.exports = db;

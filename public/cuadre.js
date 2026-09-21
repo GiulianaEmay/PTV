@@ -4,9 +4,13 @@
   const turnoSelect = document.getElementById("cuadreTurno");
   const filasIngresosBody = document.getElementById("filasIngresos");
   const filasEgresosBody = document.getElementById("filasEgresos");
+  const efectivoContadoInput = document.getElementById("efectivoContado");
   const cuadreError = document.getElementById("cuadreError");
   const cuadreCargando = document.getElementById("cuadreCargando");
   const cuadreSinMapear = document.getElementById("cuadreSinMapear");
+  const modalEgreso = document.getElementById("modalEgreso");
+
+  let egresos = [];
 
   function moneda(v) {
     return (Number(v) || 0).toFixed(2);
@@ -57,34 +61,62 @@
     }
   }
 
-  function filaEgresoHtml() {
-    return `
-      <tr>
-        <td><input type="text" class="input-egreso-detalle" placeholder="Detalle del egreso" /></td>
-        <td><input type="number" step="0.01" min="0" class="input-egreso-monto" value="0.00" /></td>
-        <td><button type="button" class="btn-quitar">x</button></td>
-      </tr>`;
+  // --- Egresos: se agregan desde un modal en vez de expandir la pagina ---
+
+  function abrirModalEgreso() {
+    document.getElementById("modalEgresoDetalle").value = "";
+    document.getElementById("modalEgresoMonto").value = "";
+    modalEgreso.classList.remove("oculto");
+    document.getElementById("modalEgresoDetalle").focus();
   }
 
-  function agregarFilaEgreso() {
-    filasEgresosBody.insertAdjacentHTML("beforeend", filaEgresoHtml());
-    const nuevaFila = filasEgresosBody.lastElementChild;
-    nuevaFila.querySelector(".input-egreso-monto").addEventListener("input", actualizarTotales);
-    nuevaFila.querySelector(".btn-quitar").addEventListener("click", () => {
-      nuevaFila.remove();
-      actualizarTotales();
-    });
+  function cerrarModalEgreso() {
+    modalEgreso.classList.add("oculto");
   }
+
+  function confirmarEgreso() {
+    const detalle = document.getElementById("modalEgresoDetalle").value.trim();
+    const monto = Number(document.getElementById("modalEgresoMonto").value) || 0;
+    if (!detalle || monto <= 0) {
+      mostrarError("El egreso necesita un detalle y un monto mayor a 0.");
+      return;
+    }
+    egresos.push({ detalle, monto });
+    cerrarModalEgreso();
+    renderEgresos();
+  }
+
+  function quitarEgreso(indice) {
+    egresos.splice(indice, 1);
+    renderEgresos();
+  }
+
+  function renderEgresos() {
+    filasEgresosBody.innerHTML = egresos
+      .map(
+        (e, i) => `
+        <tr>
+          <td>${e.detalle}</td>
+          <td>${moneda(e.monto)}</td>
+          <td><button type="button" class="btn-quitar" data-indice="${i}">x</button></td>
+        </tr>`
+      )
+      .join("");
+    filasEgresosBody.querySelectorAll(".btn-quitar").forEach((btn) => {
+      btn.addEventListener("click", () => quitarEgreso(Number(btn.dataset.indice)));
+    });
+    actualizarTotales();
+  }
+
+  // --- Totales y diferencia de caja ---
 
   function actualizarTotales() {
     const totalIngreso = [...filasIngresosBody.querySelectorAll(".input-ingreso")].reduce(
       (acc, inp) => acc + (Number(inp.value) || 0),
       0
     );
-    const totalEgreso = [...filasEgresosBody.querySelectorAll(".input-egreso-monto")].reduce(
-      (acc, inp) => acc + (Number(inp.value) || 0),
-      0
-    );
+    const totalEgreso = egresos.reduce((acc, e) => acc + e.monto, 0);
+    const efectivoEsperado = totalIngreso - totalEgreso;
     const totalSobrante =
       Number(document.getElementById("sobrantePiso").value || 0) +
       Number(document.getElementById("sobranteVariedad").value || 0) +
@@ -96,7 +128,29 @@
     document.getElementById("totalSobranteCelda").textContent = totalSobrante;
     document.getElementById("resumenIngreso").textContent = moneda(totalIngreso);
     document.getElementById("resumenEgreso").textContent = moneda(totalEgreso);
-    document.getElementById("resumenEfectivo").innerHTML = `<strong>${moneda(totalIngreso - totalEgreso)}</strong>`;
+    document.getElementById("resumenEfectivo").textContent = moneda(efectivoEsperado);
+
+    actualizarDiferencia(efectivoEsperado);
+  }
+
+  function actualizarDiferencia(efectivoEsperado) {
+    const wrap = document.getElementById("resumenDiferenciaWrap");
+    const celda = document.getElementById("resumenDiferencia");
+    const valorContado = efectivoContadoInput.value;
+
+    wrap.classList.remove("resumen-positiva", "resumen-negativa");
+
+    if (valorContado === "") {
+      celda.textContent = "Sin contar";
+      return;
+    }
+
+    const diferencia = Number(valorContado) - efectivoEsperado;
+    const signo = diferencia > 0 ? "+" : "";
+    celda.textContent = `${signo}${moneda(diferencia)}`;
+
+    if (diferencia > 0.009) wrap.classList.add("resumen-positiva");
+    else if (diferencia < -0.009) wrap.classList.add("resumen-negativa");
   }
 
   async function autocompletar() {
@@ -137,11 +191,6 @@
       ingresos[tr.dataset.fila] = Number(tr.querySelector(".input-ingreso").value) || 0;
     });
 
-    const egresos = [...filasEgresosBody.querySelectorAll("tr")].map((tr) => ({
-      detalle: tr.querySelector(".input-egreso-detalle").value,
-      monto: Number(tr.querySelector(".input-egreso-monto").value) || 0,
-    }));
-
     const cuerpo = {
       fecha: fechaInput.value,
       storeId: storeSelect.value,
@@ -149,6 +198,7 @@
       turno: turnoSelect.value,
       ingresos,
       egresos,
+      efectivoContado: efectivoContadoInput.value === "" ? null : Number(efectivoContadoInput.value),
       sobrantePan: {
         piso: Number(document.getElementById("sobrantePiso").value) || 0,
         variedad: Number(document.getElementById("sobranteVariedad").value) || 0,
@@ -172,10 +222,20 @@
 
       document.getElementById("cuadreGuardadoOk").classList.remove("oculto");
       setTimeout(() => document.getElementById("cuadreGuardadoOk").classList.add("oculto"), 3000);
+      egresos = [];
+      renderEgresos();
+      efectivoContadoInput.value = "";
       cargarHistorial();
     } catch (err) {
       mostrarError(err.message);
     }
+  }
+
+  function celdaDiferencia(diferencia) {
+    if (diferencia === null || diferencia === undefined) return '<span class="dato-vacio">Sin contar</span>';
+    const clase = diferencia > 0.009 ? "texto-positivo" : diferencia < -0.009 ? "texto-negativo" : "";
+    const signo = diferencia > 0 ? "+" : "";
+    return `<span class="${clase}">${signo}${moneda(diferencia)}</span>`;
   }
 
   async function cargarHistorial() {
@@ -184,7 +244,7 @@
 
     if (!cuadres.length) {
       document.getElementById("historialCuadres").innerHTML = `
-        <tr><td colspan="7" class="tabla-vacia">Todavia no hay cuadres guardados. Completa el formulario de arriba y guarda el primero.</td></tr>`;
+        <tr><td colspan="8" class="tabla-vacia">Todavia no hay cuadres guardados. Completa el formulario de arriba y guarda el primero.</td></tr>`;
       return;
     }
 
@@ -194,7 +254,8 @@
         (c) => `
         <tr>
           <td>${c.fecha}</td><td>${c.turno}</td><td>${c.sucursal}</td>
-          <td>${moneda(c.totalIngreso)}</td><td>${moneda(c.totalEgreso)}</td><td>${moneda(c.efectivo)}</td>
+          <td>${moneda(c.totalIngreso)}</td><td>${moneda(c.totalEgreso)}</td><td>${moneda(c.efectivoEsperado)}</td>
+          <td>${celdaDiferencia(c.diferencia)}</td>
           <td>${c.cajera || ""}</td>
         </tr>`
       )
@@ -202,8 +263,14 @@
   }
 
   document.getElementById("btnAutocompletar").addEventListener("click", autocompletar);
-  document.getElementById("btnAgregarEgreso").addEventListener("click", agregarFilaEgreso);
+  document.getElementById("btnAgregarEgreso").addEventListener("click", abrirModalEgreso);
+  document.getElementById("btnCancelarEgreso").addEventListener("click", cerrarModalEgreso);
+  document.getElementById("btnConfirmarEgreso").addEventListener("click", confirmarEgreso);
+  modalEgreso.addEventListener("click", (e) => {
+    if (e.target === modalEgreso) cerrarModalEgreso();
+  });
   document.getElementById("btnGuardarCuadre").addEventListener("click", guardarCuadre);
+  efectivoContadoInput.addEventListener("input", actualizarTotales);
   ["sobrantePiso", "sobranteVariedad", "sobranteRacion", "sobranteDefectuosos"].forEach((id) =>
     document.getElementById(id).addEventListener("input", actualizarTotales)
   );

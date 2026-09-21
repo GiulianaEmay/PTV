@@ -19,6 +19,9 @@ function filaACuadre(fila) {
     totalIngreso: fila.total_ingreso,
     totalEgreso: fila.total_egreso,
     efectivo: fila.efectivo,
+    efectivoEsperado: fila.efectivo,
+    efectivoContado: fila.efectivo_contado,
+    diferencia: fila.diferencia,
     creadoEn: fila.creado_en,
   };
 }
@@ -26,12 +29,17 @@ function filaACuadre(fila) {
 function guardarCuadre(empresaId, datos) {
   const totalIngreso = Object.values(datos.ingresos || {}).reduce((a, b) => a + (Number(b) || 0), 0);
   const totalEgreso = (datos.egresos || []).reduce((a, e) => a + (Number(e.monto) || 0), 0);
+  const efectivoEsperado = totalIngreso - totalEgreso;
+
+  const tieneContado = datos.efectivoContado !== undefined && datos.efectivoContado !== null && datos.efectivoContado !== "";
+  const efectivoContado = tieneContado ? Number(datos.efectivoContado) : null;
+  const diferencia = tieneContado ? efectivoContado - efectivoEsperado : null;
 
   const resultado = db
     .prepare(
       `INSERT INTO cuadres
-        (empresa_id, fecha, store_id, sucursal, turno, ingresos, egresos, sobrante_pan, cajera, vendedoras, vb_adm, bolsas_quedan, total_ingreso, total_egreso, efectivo)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        (empresa_id, fecha, store_id, sucursal, turno, ingresos, egresos, sobrante_pan, cajera, vendedoras, vb_adm, bolsas_quedan, total_ingreso, total_egreso, efectivo, efectivo_contado, diferencia)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .run(
       empresaId,
@@ -48,7 +56,9 @@ function guardarCuadre(empresaId, datos) {
       String(datos.bolsasQuedan ?? ""),
       totalIngreso,
       totalEgreso,
-      totalIngreso - totalEgreso
+      efectivoEsperado,
+      efectivoContado,
+      diferencia
     );
 
   const fila = db.prepare("SELECT * FROM cuadres WHERE id = ?").get(Number(resultado.lastInsertRowid));
@@ -74,4 +84,15 @@ function listarCuadres({ empresaId, from, to, storeId }) {
   return db.prepare(sql).all(...params).map(filaACuadre);
 }
 
-module.exports = { guardarCuadre, listarCuadres };
+/**
+ * Suma la diferencia de caja (contado - esperado) de los cuadres del rango
+ * que ya tienen efectivo contado registrado. Se usa para el KPI "Diferencia
+ * de caja" del dashboard principal.
+ */
+function resumenDiferencia({ empresaId, from, to, storeId }) {
+  const cuadres = listarCuadres({ empresaId, from, to, storeId }).filter((c) => c.diferencia !== null);
+  const total = cuadres.reduce((acc, c) => acc + c.diferencia, 0);
+  return { total, cantidadCuadres: cuadres.length };
+}
+
+module.exports = { guardarCuadre, listarCuadres, resumenDiferencia };

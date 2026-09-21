@@ -12,21 +12,26 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 </head>
 <body>
-  <header>
-    <div class="logo-marca"></div>
-    <div class="titulos">
-      <h1>Emay Tech</h1>
-      <p class="subtitulo">KPIs y cuadre de caja conectado a Loyverse</p>
-    </div>
-    <div id="sesionInfo" class="sesion-info"></div>
-  </header>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-marca">
+        <div class="logo-marca"></div>
+        <div class="titulos">
+          <h1>Emay Tech</h1>
+          <p class="subtitulo">KPIs y cuadre de caja</p>
+        </div>
+      </div>
 
-  <nav class="tabs-nav">
-    <button class="tab-btn activa" data-tab="tabKpis">KPIs</button>
-    <button class="tab-btn" data-tab="tabCuadre">Cuadre de Caja</button>
-    <button class="tab-btn" data-tab="tabConfig">Configuracion</button>
-  </nav>
+      <nav class="sidebar-nav">
+        <button class="tab-btn activa" data-tab="tabKpis">KPIs</button>
+        <button class="tab-btn" data-tab="tabCuadre">Cuadre de Caja</button>
+        <button class="tab-btn" data-tab="tabConfig">Configuracion</button>
+      </nav>
 
+      <div id="sesionInfo" class="sesion-info"></div>
+    </aside>
+
+    <main class="contenido-principal">
   <!-- ===================== TAB: KPIs ===================== -->
   <section id="tabKpis" class="tab">
     <section class="filtros">
@@ -103,16 +108,30 @@
     <p id="cuadreCargando" class="cargando oculto">Consultando Loyverse...</p>
     <p id="cuadreSinMapear" class="aviso oculto"></p>
 
-    <div class="reporte-caja">
-      <div class="reporte-col">
-        <h3>Ingresos (efectivo por categoria)</h3>
+    <div class="flujo-cuadre">
+      <section class="paso-cuadre">
+        <div class="paso-header"><span class="paso-numero">1</span><h3>Ingresos (efectivo por categoria)</h3></div>
         <table class="tabla-reporte">
           <thead><tr><th>Detalle</th><th>Efectivo</th></tr></thead>
           <tbody id="filasIngresos"></tbody>
           <tfoot><tr><td>Total</td><td id="totalIngresoCelda">0.00</td></tr></tfoot>
         </table>
+      </section>
 
-        <h3>Sobrante de pan (unidades)</h3>
+      <section class="paso-cuadre">
+        <div class="paso-header">
+          <span class="paso-numero">2</span><h3>Egresos (pagos en efectivo desde caja)</h3>
+          <button id="btnAgregarEgreso" class="btn-secundario btn-paso-accion">+ Agregar egreso</button>
+        </div>
+        <table class="tabla-reporte">
+          <thead><tr><th>Detalle</th><th>Efectivo</th><th></th></tr></thead>
+          <tbody id="filasEgresos"></tbody>
+          <tfoot><tr><td>Total</td><td id="totalEgresoCelda">0.00</td><td></td></tr></tfoot>
+        </table>
+      </section>
+
+      <section class="paso-cuadre">
+        <div class="paso-header"><span class="paso-numero">3</span><h3>Sobrante de pan (unidades)</h3></div>
         <table class="tabla-reporte">
           <thead><tr><th>Detalle</th><th>Cantidad</th></tr></thead>
           <tbody>
@@ -123,34 +142,55 @@
           </tbody>
           <tfoot><tr><td>Total</td><td id="totalSobranteCelda">0</td></tr></tfoot>
         </table>
-      </div>
+      </section>
 
-      <div class="reporte-col">
-        <h3>Egresos (pagos en efectivo desde caja)</h3>
-        <table class="tabla-reporte">
-          <thead><tr><th>Detalle</th><th>Efectivo</th><th></th></tr></thead>
-          <tbody id="filasEgresos"></tbody>
-          <tfoot><tr><td>Total</td><td id="totalEgresoCelda">0.00</td><td></td></tr></tfoot>
-        </table>
-        <button id="btnAgregarEgreso" class="btn-secundario">+ Agregar egreso</button>
+      <section class="paso-cuadre">
+        <div class="paso-header"><span class="paso-numero">4</span><h3>Resumen</h3></div>
+        <div class="resumen-grid">
+          <div class="resumen-item">
+            <span>Ingreso</span>
+            <strong id="resumenIngreso">0.00</strong>
+          </div>
+          <div class="resumen-item">
+            <span>Egreso</span>
+            <strong id="resumenEgreso">0.00</strong>
+          </div>
+          <div class="resumen-item resumen-destacado">
+            <span>Efectivo esperado</span>
+            <strong id="resumenEfectivo">0.00</strong>
+          </div>
+          <div class="resumen-item">
+            <span>Efectivo contado</span>
+            <input type="number" step="0.01" min="0" id="efectivoContado" placeholder="Cuenta el dinero fisico" />
+          </div>
+          <div class="resumen-item resumen-diferencia" id="resumenDiferenciaWrap">
+            <span>Diferencia</span>
+            <strong id="resumenDiferencia">Sin contar</strong>
+          </div>
+        </div>
+      </section>
 
-        <h3>Resumen</h3>
-        <table class="tabla-reporte">
-          <tbody>
-            <tr><td>Ingreso</td><td id="resumenIngreso">0.00</td></tr>
-            <tr><td>Egreso</td><td id="resumenEgreso">0.00</td></tr>
-            <tr><td><strong>Efectivo</strong></td><td id="resumenEfectivo"><strong>0.00</strong></td></tr>
-          </tbody>
-        </table>
-
-        <h3>Datos del turno</h3>
+      <section class="paso-cuadre">
+        <div class="paso-header"><span class="paso-numero">5</span><h3>Datos del turno</h3></div>
         <label>Cajera <input type="text" id="cajera" /></label>
         <label>Vendedora(s) <input type="text" id="vendedoras" /></label>
         <label>V.B. Administracion <input type="text" id="vbAdm" /></label>
         <label>Bolsas quedan <input type="number" min="0" id="bolsasQuedan" /></label>
+      </section>
 
-        <button id="btnGuardarCuadre" class="btn-principal">Guardar cuadre de caja</button>
-        <p id="cuadreGuardadoOk" class="ok oculto">Cuadre guardado correctamente.</p>
+      <button id="btnGuardarCuadre" class="btn-principal btn-guardar-cuadre">6. Guardar cuadre de caja</button>
+      <p id="cuadreGuardadoOk" class="ok oculto">Cuadre guardado correctamente.</p>
+    </div>
+
+    <div class="modal-overlay oculto" id="modalEgreso">
+      <div class="modal-caja">
+        <h3>Agregar egreso</h3>
+        <label>Detalle <input type="text" id="modalEgresoDetalle" placeholder="Ej. Compra de bolsas" /></label>
+        <label>Monto <input type="number" step="0.01" min="0" id="modalEgresoMonto" placeholder="0.00" /></label>
+        <div class="modal-acciones">
+          <button id="btnCancelarEgreso" class="btn-secundario">Cancelar</button>
+          <button id="btnConfirmarEgreso" class="btn-principal">Agregar</button>
+        </div>
       </div>
     </div>
 
@@ -158,7 +198,7 @@
     <div class="tabla-scroll">
       <table class="tabla-reporte">
         <thead>
-          <tr><th>Fecha</th><th>Turno</th><th>Sucursal</th><th>Ingreso</th><th>Egreso</th><th>Efectivo</th><th>Cajera</th></tr>
+          <tr><th>Fecha</th><th>Turno</th><th>Sucursal</th><th>Ingreso</th><th>Egreso</th><th>Efectivo esperado</th><th>Diferencia</th><th>Cajera</th></tr>
         </thead>
         <tbody id="historialCuadres"></tbody>
       </table>
@@ -167,27 +207,46 @@
 
   <!-- ===================== TAB: Configuracion ===================== -->
   <section id="tabConfig" class="tab oculto">
-    <h3>Horario de turnos</h3>
-    <p class="ayuda">Define el rango horario de cada turno para poder traer las ventas en efectivo de Loyverse de ese periodo.</p>
-    <table class="tabla-reporte tabla-turnos">
-      <thead><tr><th>Turno</th><th>Inicio</th><th>Fin</th></tr></thead>
-      <tbody id="filasTurnos"></tbody>
-    </table>
-    <button id="btnGuardarTurnos" class="btn-principal">Guardar turnos</button>
-    <p id="turnosGuardadoOk" class="ok oculto">Turnos guardados.</p>
+    <div class="config-card">
+      <h3>Horario de turnos</h3>
+      <p class="ayuda">Define el rango horario de cada turno para poder traer las ventas en efectivo de Loyverse de ese periodo.</p>
+      <table class="tabla-reporte tabla-turnos">
+        <thead><tr><th>Turno</th><th>Inicio</th><th>Fin</th></tr></thead>
+        <tbody id="filasTurnos"></tbody>
+      </table>
+      <button id="btnGuardarTurnos" class="btn-principal">Guardar turnos</button>
+      <p id="turnosGuardadoOk" class="ok oculto">Turnos guardados.</p>
+    </div>
 
-    <h3>Categoria mas vendida (KPI)</h3>
-    <p class="ayuda">Marca las categorias que quieres excluir del KPI "Categoria mas vendida" (por ejemplo, Pan, si siempre domina y no aporta al analisis).</p>
-    <div id="categoriasExcluidas" class="mapeo-categorias"></div>
-    <button id="btnGuardarExcluidas" class="btn-principal">Guardar categorias excluidas</button>
-    <p id="excluidasGuardadoOk" class="ok oculto">Guardado.</p>
+    <div class="config-card">
+      <h3>Categorias excluidas (KPI "Categoria principal")</h3>
+      <p class="ayuda">Marca las categorias que quieres excluir de ese KPI (por ejemplo, Pan, si siempre domina y no aporta al analisis).</p>
+      <div id="categoriasExcluidas" class="mapeo-categorias"></div>
+      <button id="btnGuardarExcluidas" class="btn-principal">Guardar categorias excluidas</button>
+      <p id="excluidasGuardadoOk" class="ok oculto">Guardado.</p>
+    </div>
 
-    <h3>Mapeo de categorias</h3>
-    <p class="ayuda">Indica que categorias de productos de Loyverse corresponden a cada fila del reporte de caja. Puedes marcar varias categorias por fila.</p>
-    <div id="mapeoCategorias" class="mapeo-categorias"></div>
-    <button id="btnGuardarMapeo" class="btn-principal">Guardar mapeo de categorias</button>
-    <p id="mapeoGuardadoOk" class="ok oculto">Mapeo guardado.</p>
+    <div class="config-card">
+      <h3>Mapeo de categorias</h3>
+      <p class="ayuda">Indica que categorias de productos de Loyverse corresponden a cada fila del reporte de caja. Puedes marcar varias categorias por fila.</p>
+      <div id="mapeoCategorias" class="mapeo-categorias"></div>
+      <button id="btnGuardarMapeo" class="btn-principal">Guardar mapeo de categorias</button>
+      <p id="mapeoGuardadoOk" class="ok oculto">Mapeo guardado.</p>
+    </div>
+
+    <div class="config-card">
+      <h3>Sucursales</h3>
+      <p class="ayuda">Las sucursales se administran directamente en Loyverse. Estas son las que ve este negocio:</p>
+      <ul id="listaSucursales" class="lista-sucursales"></ul>
+    </div>
+
+    <div class="config-card">
+      <h3>Usuarios y permisos</h3>
+      <p class="ayuda">Los usuarios que entran a este dashboard los crea y administra Emay Tech desde el Panel de Administracion, no desde aqui.</p>
+    </div>
   </section>
+    </main>
+  </div>
 
   <script src="session.js"></script>
   <script src="topbar.js"></script>

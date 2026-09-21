@@ -139,7 +139,8 @@ app.get("/api/kpis", requireAuth, requireEmpresaSeleccionada, async (req, res) =
       categoriasExcluidas: empresa.categoriasExcluidasKpi,
       excluirPan: excluirPan === "true",
     });
-    res.json({ from, to, storeId: storeId || null, ...kpis });
+    const diferenciaCaja = cuadresRepo.resumenDiferencia({ empresaId: req.empresaId, from, to, storeId });
+    res.json({ from, to, storeId: storeId || null, ...kpis, diferenciaCaja });
   } catch (err) {
     handleError(res, err);
   }

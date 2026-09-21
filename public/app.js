@@ -60,73 +60,36 @@ async function cargarTiendas() {
   }
 }
 
-function numeroDias(from, to) {
-  const msPorDia = 24 * 60 * 60 * 1000;
-  const dias = Math.round((new Date(`${to}T00:00:00`) - new Date(`${from}T00:00:00`)) / msPorDia) + 1;
-  return Math.max(dias, 1);
-}
-
-function porcentajeEfectivo(kpis) {
-  if (!kpis.totalVentas) return 0;
+function obtenerMontoEfectivo(kpis) {
   const efectivo = kpis.ventasPorMetodoPago.find((p) => /efectivo|cash/i.test(p.nombre));
-  return efectivo ? (efectivo.total / kpis.totalVentas) * 100 : 0;
+  return efectivo ? efectivo.total : 0;
 }
 
 function renderTarjetas(kpis) {
-  const dias = numeroDias(kpis.from, kpis.to);
-  const pctEfectivo = porcentajeEfectivo(kpis);
-  const productoTop = kpis.productosMasVendidos[0];
+  const efectivo = obtenerMontoEfectivo(kpis);
+  const diferencia = kpis.diferenciaCaja;
+  const tieneDiferencia = diferencia && diferencia.cantidadCuadres > 0;
+  const signo = !tieneDiferencia ? "neutra" : diferencia.total > 0 ? "positiva" : diferencia.total < 0 ? "negativa" : "neutra";
 
-  const bloques = [
+  const items = [
+    { etiqueta: "Ventas", valor: formatoMoneda(kpis.totalVentas) },
+    { etiqueta: "Efectivo", valor: formatoMoneda(efectivo) },
+    { etiqueta: "Ticket promedio", valor: formatoMoneda(kpis.ticketPromedio) },
+    { etiqueta: "Productos vendidos", valor: kpis.totalUnidadesVendidas },
+    { etiqueta: "Categoria principal", valor: kpis.categoriaMasVendida ? kpis.categoriaMasVendida.nombre : "Sin datos" },
     {
-      titulo: "Ventas",
-      items: [
-        { etiqueta: "Ventas totales", valor: formatoMoneda(kpis.totalVentas) },
-        { etiqueta: "Ventas netas (- reembolsos)", valor: formatoMoneda(kpis.ventasNetas) },
-        { etiqueta: "N° de tickets", valor: kpis.numeroTickets },
-        { etiqueta: "Ticket promedio", valor: formatoMoneda(kpis.ticketPromedio) },
-        { etiqueta: "Venta promedio diaria", valor: formatoMoneda(kpis.totalVentas / dias) },
-      ],
-    },
-    {
-      titulo: "Caja y descuentos",
-      items: [
-        { etiqueta: "Ventas en efectivo", valor: `${pctEfectivo.toFixed(0)}%` },
-        { etiqueta: "Descuentos otorgados", valor: formatoMoneda(kpis.totalDescuentos) },
-        { etiqueta: "Propinas", valor: formatoMoneda(kpis.totalPropinas) },
-        { etiqueta: "Reembolsos", valor: formatoMoneda(kpis.totalReembolsos) },
-      ],
-    },
-    {
-      titulo: "Productos",
-      items: [
-        {
-          etiqueta: "Categoria mas vendida (sin excluidas)",
-          valor: kpis.categoriaMasVendida
-            ? `${kpis.categoriaMasVendida.nombre} (${formatoMoneda(kpis.categoriaMasVendida.total)})`
-            : "Sin datos",
-        },
-        {
-          etiqueta: "Producto mas vendido",
-          valor: productoTop ? `${productoTop.nombre} (${productoTop.cantidad} uds.)` : "Sin datos",
-        },
-      ],
+      etiqueta: "Diferencia de caja",
+      valor: tieneDiferencia ? formatoMoneda(diferencia.total) : "Sin registrar",
+      clase: `tarjeta-diferencia-${signo}`,
     },
   ];
 
-  document.getElementById("tarjetas").innerHTML = bloques
-    .map(
-      (b) => `
-      <div class="bloque-kpis">
-        <h2>${b.titulo}</h2>
-        <div class="tarjetas">
-          ${b.items
-            .map((i) => `<div class="tarjeta"><div class="etiqueta">${i.etiqueta}</div><p class="valor">${i.valor}</p></div>`)
-            .join("")}
-        </div>
-      </div>`
-    )
-    .join("");
+  document.getElementById("tarjetas").innerHTML = `
+    <div class="tarjetas">
+      ${items
+        .map((i) => `<div class="tarjeta ${i.clase || ""}"><div class="etiqueta">${i.etiqueta}</div><p class="valor">${i.valor}</p></div>`)
+        .join("")}
+    </div>`;
 }
 
 function actualizarGrafico(id, tipo, config) {

@@ -62,6 +62,7 @@ function calcularKpis(receipts, opciones = {}) {
   let productos = [...productosMap.values()];
   if (excluirPan) productos = productos.filter((p) => !REGEX_PAN.test(p.nombre));
 
+  const totalUnidadesVendidas = sum(productos, (p) => p.cantidad);
   const productosMasVendidos = [...productos].sort((a, b) => b.cantidad - a.cantidad).slice(0, 10);
   const productosPorIngreso = [...productos].sort((a, b) => b.total - a.total).slice(0, 10);
 
@@ -94,6 +95,7 @@ function calcularKpis(receipts, opciones = {}) {
     ventasPorEmpleado,
     ventasPorHora,
     ventasPorDiaSemana: ventasPorDiaSemana.map((total, i) => ({ dia: DIAS[i], total })),
+    totalUnidadesVendidas,
     productosMasVendidos,
     productosPorIngreso,
     ventasPorCategoria,
