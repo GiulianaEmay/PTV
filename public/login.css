@@ -1,39 +1,125 @@
 .pagina-login {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: radial-gradient(circle at 50% 0%, rgba(83, 58, 253, 0.1), transparent 55%), var(--bg);
+  overflow: hidden;
+  background: linear-gradient(160deg, #f4f3fd 0%, #fbfbff 45%, #f0eefc 100%);
 }
 
+/* --- Formas decorativas de fondo --- */
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.blob-superior {
+  top: -180px;
+  left: -180px;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle at 35% 35%, var(--primary-soft-strong), var(--primary) 60%, #1c1e54 100%);
+  border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%;
+  opacity: 0.95;
+}
+
+.blob-inferior {
+  bottom: -220px;
+  right: -200px;
+  width: 460px;
+  height: 460px;
+  background: radial-gradient(circle at 65% 65%, var(--primary-soft), var(--primary-soft-strong) 70%);
+  border-radius: 55% 45% 35% 65% / 55% 65% 35% 45%;
+  opacity: 0.5;
+}
+
+.linea-decorativa {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ilustracion-pos {
+  position: absolute;
+  right: 6%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 260px;
+  height: auto;
+  color: var(--primary);
+  opacity: 0.14;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .ilustracion-pos { display: none; }
+}
+
+/* --- Tarjeta --- */
+
 .login-card {
+  position: relative;
+  z-index: 1;
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 36px 32px;
-  width: 340px;
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(28, 30, 84, 0.14);
+  padding: 44px 40px;
+  width: 440px;
   max-width: calc(100vw - 32px);
 }
 
+.logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+
 .login-card .logo-marca {
-  width: 44px;
-  height: 44px;
+  width: 56px;
+  height: 56px;
   font-size: 19px;
-  border-radius: 12px;
-  margin-bottom: 20px;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(83, 58, 253, 0.35);
+}
+
+.logo-linea {
+  width: 32px;
+  height: 3px;
+  border-radius: 2px;
+  margin-top: 8px;
+  background: linear-gradient(90deg, var(--primary), var(--accent-2));
 }
 
 .login-card h1 {
-  font-size: 19px;
-  font-weight: 700;
-  margin: 0 0 4px;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.texto-degradado {
+  background: linear-gradient(90deg, var(--primary), var(--primary-soft-strong));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .login-card > p {
   color: var(--muted);
-  font-size: 13px;
-  margin: 0 0 22px;
+  font-size: 13.5px;
+  margin: 0 0 26px;
 }
 
 .login-card label {
@@ -44,12 +130,27 @@
   margin-bottom: 6px;
 }
 
+.campo-icono {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.campo-icono svg {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
 .login-card input {
   width: 100%;
-  padding: 9px 11px;
+  padding: 11px 14px 11px 40px;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  margin-bottom: 16px;
+  border-radius: 10px;
   font-family: var(--font-sans);
   font-size: 13.5px;
   color: var(--text);
@@ -62,9 +163,31 @@
   box-shadow: 0 0 0 3px var(--primary-soft);
 }
 
-.login-card .btn-principal {
+.btn-entrar {
   width: 100%;
-  margin-top: 4px;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 22px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-soft-strong));
+  border-color: transparent;
+  font-size: 14.5px;
 }
 
+.btn-entrar svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.15s ease;
+}
+
+.btn-entrar:hover svg { transform: translateX(3px); }
+
 .login-card .error { margin-bottom: 16px; }
+
+@media (max-width: 480px) {
+  .login-card { padding: 32px 24px; width: 100%; }
+  .login-card h1 { font-size: 21px; }
+  .blob-superior, .blob-inferior { width: 320px; height: 320px; }
+}
