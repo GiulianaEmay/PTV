@@ -1,6 +1,7 @@
 const { getAllReceipts } = require("./loyverseClient");
 const { obtenerCatalogo } = require("./loyverseCatalog");
 const { FILAS_INGRESOS } = require("./filasReporte");
+const { OFFSET_PERU } = require("./zonaHoraria");
 
 function esPagoEfectivo(payment) {
   const tipo = (payment.type || "").toUpperCase();
@@ -25,8 +26,8 @@ function construirIndiceCategoriaFila(mapeoCategorias) {
  * Si un recibo tuvo pago mixto, se prorratea el efectivo entre sus lineas.
  */
 async function autocompletarIngresos({ empresaId, token, fecha, storeId, ventanaTurno, mapeoCategorias }) {
-  const inicio = new Date(`${fecha}T${ventanaTurno.inicio}:00`);
-  const fin = new Date(`${fecha}T${ventanaTurno.fin}:00`);
+  const inicio = new Date(`${fecha}T${ventanaTurno.inicio}:00${OFFSET_PERU}`);
+  const fin = new Date(`${fecha}T${ventanaTurno.fin}:00${OFFSET_PERU}`);
 
   const [receipts, catalogo] = await Promise.all([
     getAllReceipts(token, { createdAtMin: inicio.toISOString(), createdAtMax: fin.toISOString(), storeId }),

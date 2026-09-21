@@ -12,6 +12,13 @@
     return (Number(v) || 0).toFixed(2);
   }
 
+  function fechaISO(date) {
+    const anio = date.getFullYear();
+    const mes = String(date.getMonth() + 1).padStart(2, "0");
+    const dia = String(date.getDate()).padStart(2, "0");
+    return `${anio}-${mes}-${dia}`;
+  }
+
   function mostrarError(msg) {
     cuadreError.textContent = msg;
     cuadreError.classList.remove("oculto");
@@ -201,7 +208,7 @@
     document.getElementById(id).addEventListener("input", actualizarTotales)
   );
 
-  fechaInput.value = new Date().toISOString().slice(0, 10);
+  fechaInput.value = fechaISO(new Date());
   cargarFilasIngresos().then(actualizarTotales);
   cargarTiendasYTurnos();
   cargarHistorial();

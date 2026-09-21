@@ -8,6 +8,7 @@ const { calcularKpis } = require("./src/kpis");
 const { obtenerCatalogo } = require("./src/loyverseCatalog");
 const { autocompletarIngresos } = require("./src/cuadreCaja");
 const { FILAS_INGRESOS } = require("./src/filasReporte");
+const { OFFSET_PERU } = require("./src/zonaHoraria");
 const { requireAuth, requireAdmin, empresaActualId, requireEmpresaSeleccionada } = require("./src/auth");
 const empresasRepo = require("./src/empresasRepo");
 const usuariosRepo = require("./src/usuariosRepo");
@@ -127,8 +128,8 @@ app.get("/api/kpis", requireAuth, requireEmpresaSeleccionada, async (req, res) =
     }
 
     const empresa = empresasRepo.obtenerEmpresa(req.empresaId);
-    const createdAtMin = new Date(`${from}T00:00:00Z`).toISOString();
-    const createdAtMax = new Date(`${to}T23:59:59Z`).toISOString();
+    const createdAtMin = new Date(`${from}T00:00:00${OFFSET_PERU}`).toISOString();
+    const createdAtMax = new Date(`${to}T23:59:59${OFFSET_PERU}`).toISOString();
 
     const receipts = await getAllReceipts(empresa.loyverseToken, { createdAtMin, createdAtMax, storeId });
     const { itemCategoria } = await obtenerCatalogo(empresa.id, empresa.loyverseToken);

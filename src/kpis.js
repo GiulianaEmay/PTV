@@ -1,3 +1,5 @@
+const { aInstantePeru } = require("./zonaHoraria");
+
 const DIAS = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
 
 function isVentaValida(receipt) {
@@ -30,8 +32,9 @@ function calcularKpis(receipts, opciones = {}) {
   for (const r of ventas) {
     const fecha = new Date(r.receipt_date);
     if (!isNaN(fecha)) {
-      ventasPorHora[fecha.getHours()] += r.total_money || 0;
-      ventasPorDiaSemana[fecha.getDay()] += r.total_money || 0;
+      const fechaPeru = aInstantePeru(fecha);
+      ventasPorHora[fechaPeru.getUTCHours()] += r.total_money || 0;
+      ventasPorDiaSemana[fechaPeru.getUTCDay()] += r.total_money || 0;
     }
   }
 
