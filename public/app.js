@@ -6,11 +6,11 @@ const cargando = document.getElementById("cargando");
 
 const charts = {};
 
-const PALETA = ["#7c3aed", "#a855f7", "#c4b5fd", "#e0304a", "#b3690a", "#4f46e5"];
+const PALETA = ["#533afd", "#ea2261", "#665efd", "#f96bee", "#a3620a", "#273951"];
 
-Chart.defaults.color = "#78798c";
-Chart.defaults.borderColor = "#e6e4ee";
-Chart.defaults.font.family = "'Geist', 'Segoe UI', Arial, sans-serif";
+Chart.defaults.color = "#64748d";
+Chart.defaults.borderColor = "#e3e8ee";
+Chart.defaults.font.family = "'Inter', 'Segoe UI', Arial, sans-serif";
 Chart.defaults.font.size = 12;
 
 function formatoMoneda(valor) {
@@ -59,27 +59,71 @@ async function cargarTiendas() {
   }
 }
 
+function numeroDias(from, to) {
+  const msPorDia = 24 * 60 * 60 * 1000;
+  const dias = Math.round((new Date(`${to}T00:00:00`) - new Date(`${from}T00:00:00`)) / msPorDia) + 1;
+  return Math.max(dias, 1);
+}
+
+function porcentajeEfectivo(kpis) {
+  if (!kpis.totalVentas) return 0;
+  const efectivo = kpis.ventasPorMetodoPago.find((p) => /efectivo|cash/i.test(p.nombre));
+  return efectivo ? (efectivo.total / kpis.totalVentas) * 100 : 0;
+}
+
 function renderTarjetas(kpis) {
-  const tarjetas = document.getElementById("tarjetas");
-  const items = [
-    { etiqueta: "Ventas totales", valor: formatoMoneda(kpis.totalVentas) },
-    { etiqueta: "Ventas netas (- reembolsos)", valor: formatoMoneda(kpis.ventasNetas) },
-    { etiqueta: "N° de tickets", valor: kpis.numeroTickets },
-    { etiqueta: "Ticket promedio", valor: formatoMoneda(kpis.ticketPromedio) },
-    { etiqueta: "Descuentos otorgados", valor: formatoMoneda(kpis.totalDescuentos) },
-    { etiqueta: "Propinas", valor: formatoMoneda(kpis.totalPropinas) },
-    { etiqueta: "Reembolsos", valor: formatoMoneda(kpis.totalReembolsos) },
+  const dias = numeroDias(kpis.from, kpis.to);
+  const pctEfectivo = porcentajeEfectivo(kpis);
+  const productoTop = kpis.productosMasVendidos[0];
+
+  const bloques = [
     {
-      etiqueta: "Categoria mas vendida (sin excluidas)",
-      valor: kpis.categoriaMasVendida
-        ? `${kpis.categoriaMasVendida.nombre} (${formatoMoneda(kpis.categoriaMasVendida.total)})`
-        : "Sin datos",
+      titulo: "Ventas",
+      items: [
+        { etiqueta: "Ventas totales", valor: formatoMoneda(kpis.totalVentas) },
+        { etiqueta: "Ventas netas (- reembolsos)", valor: formatoMoneda(kpis.ventasNetas) },
+        { etiqueta: "N° de tickets", valor: kpis.numeroTickets },
+        { etiqueta: "Ticket promedio", valor: formatoMoneda(kpis.ticketPromedio) },
+        { etiqueta: "Venta promedio diaria", valor: formatoMoneda(kpis.totalVentas / dias) },
+      ],
+    },
+    {
+      titulo: "Caja y descuentos",
+      items: [
+        { etiqueta: "Ventas en efectivo", valor: `${pctEfectivo.toFixed(0)}%` },
+        { etiqueta: "Descuentos otorgados", valor: formatoMoneda(kpis.totalDescuentos) },
+        { etiqueta: "Propinas", valor: formatoMoneda(kpis.totalPropinas) },
+        { etiqueta: "Reembolsos", valor: formatoMoneda(kpis.totalReembolsos) },
+      ],
+    },
+    {
+      titulo: "Productos",
+      items: [
+        {
+          etiqueta: "Categoria mas vendida (sin excluidas)",
+          valor: kpis.categoriaMasVendida
+            ? `${kpis.categoriaMasVendida.nombre} (${formatoMoneda(kpis.categoriaMasVendida.total)})`
+            : "Sin datos",
+        },
+        {
+          etiqueta: "Producto mas vendido",
+          valor: productoTop ? `${productoTop.nombre} (${productoTop.cantidad} uds.)` : "Sin datos",
+        },
+      ],
     },
   ];
 
-  tarjetas.innerHTML = items
+  document.getElementById("tarjetas").innerHTML = bloques
     .map(
-      (i) => `<div class="tarjeta"><div class="etiqueta">${i.etiqueta}</div><p class="valor">${i.valor}</p></div>`
+      (b) => `
+      <div class="bloque-kpis">
+        <h2>${b.titulo}</h2>
+        <div class="tarjetas">
+          ${b.items
+            .map((i) => `<div class="tarjeta"><div class="etiqueta">${i.etiqueta}</div><p class="valor">${i.valor}</p></div>`)
+            .join("")}
+        </div>
+      </div>`
     )
     .join("");
 }
@@ -91,12 +135,12 @@ function actualizarGrafico(id, tipo, config) {
 }
 
 function renderGraficos(kpis) {
-  const ejes = { grid: { color: "#e6e4ee" }, ticks: { color: "#78798c" } };
+  const ejes = { grid: { color: "#e3e8ee" }, ticks: { color: "#64748d" } };
 
   actualizarGrafico("chartDiaSemana", "bar", {
     data: {
       labels: kpis.ventasPorDiaSemana.map((d) => d.dia),
-      datasets: [{ label: "Ventas", data: kpis.ventasPorDiaSemana.map((d) => d.total), backgroundColor: "#7c3aed", borderRadius: 2 }],
+      datasets: [{ label: "Ventas", data: kpis.ventasPorDiaSemana.map((d) => d.total), backgroundColor: "#533afd", borderRadius: 2 }],
     },
     options: { plugins: { legend: { display: false } }, scales: { x: ejes, y: ejes } },
   });
@@ -104,7 +148,7 @@ function renderGraficos(kpis) {
   actualizarGrafico("chartHora", "line", {
     data: {
       labels: kpis.ventasPorHora.map((_, h) => `${h}:00`),
-      datasets: [{ label: "Ventas", data: kpis.ventasPorHora, borderColor: "#7c3aed", backgroundColor: "rgba(124,58,237,0.08)", fill: true, tension: 0.3, pointRadius: 0 }],
+      datasets: [{ label: "Ventas", data: kpis.ventasPorHora, borderColor: "#533afd", backgroundColor: "rgba(83,58,253,0.08)", fill: true, tension: 0.3, pointRadius: 0 }],
     },
     options: { plugins: { legend: { display: false } }, scales: { x: ejes, y: ejes } },
   });
@@ -114,13 +158,13 @@ function renderGraficos(kpis) {
       labels: kpis.ventasPorMetodoPago.map((p) => p.nombre),
       datasets: [{ data: kpis.ventasPorMetodoPago.map((p) => p.total), backgroundColor: PALETA, borderColor: "#ffffff", borderWidth: 2 }],
     },
-    options: { plugins: { legend: { labels: { color: "#78798c" } } } },
+    options: { plugins: { legend: { labels: { color: "#64748d" } } } },
   });
 
   actualizarGrafico("chartProductos", "bar", {
     data: {
       labels: kpis.productosMasVendidos.map((p) => p.nombre),
-      datasets: [{ label: "Unidades", data: kpis.productosMasVendidos.map((p) => p.cantidad), backgroundColor: "#a855f7", borderRadius: 2 }],
+      datasets: [{ label: "Unidades", data: kpis.productosMasVendidos.map((p) => p.cantidad), backgroundColor: "#665efd", borderRadius: 2 }],
     },
     options: { indexAxis: "y", plugins: { legend: { display: false } }, scales: { x: ejes, y: ejes } },
   });
@@ -129,7 +173,7 @@ function renderGraficos(kpis) {
   actualizarGrafico("chartCategorias", "bar", {
     data: {
       labels: categorias.map((c) => c.nombre),
-      datasets: [{ label: "Ventas", data: categorias.map((c) => c.total), backgroundColor: "#7c3aed", borderRadius: 2 }],
+      datasets: [{ label: "Ventas", data: categorias.map((c) => c.total), backgroundColor: "#533afd", borderRadius: 2 }],
     },
     options: { indexAxis: "y", plugins: { legend: { display: false } }, scales: { x: ejes, y: ejes } },
   });

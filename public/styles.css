@@ -1,28 +1,34 @@
 :root {
-  --bg: #f6f5fa;
+  /* Paleta basada en la referencia de diseno de Stripe (infraestructura financiera) */
+  --bg: #f6f9fc;
   --bg-elevated: #ffffff;
   --card-bg: #ffffff;
-  --card-bg-hover: #faf9fd;
-  --text: #17171f;
-  --muted: #6f6f80;
-  --primary: #7c3aed;
-  --primary-hover: #6d28d9;
-  --primary-soft: #f1ebfe;
+  --card-bg-hover: #f6f9fc;
+  --text: #0d253d;
+  --text-secondary: #273951;
+  --muted: #64748d;
+  --primary: #533afd;
+  --primary-hover: #4434d4;
+  --primary-press: #2e2b8c;
+  --primary-soft-strong: #665efd;
+  --primary-soft: #b9b9f9;
   --primary-contrast: #ffffff;
-  --accent: #a855f7;
-  --border: #e7e5ee;
-  --border-strong: #d3d0e0;
+  --accent: #ea2261;
+  --accent-2: #f96bee;
+  --border: #e3e8ee;
+  --border-strong: #a8c3de;
   --danger: #d92d43;
   --danger-bg: #fdecef;
   --warn: #a3620a;
   --warn-bg: #fdf3e2;
-  --ok: #6d28d9;
-  --ok-bg: #f1ebfe;
-  --font-sans: "Geist", "Segoe UI", Arial, sans-serif;
-  --radius-sm: 8px;
+  --ok: #4434d4;
+  --ok-bg: #ecebff;
+  --font-sans: "Inter", "Segoe UI", Arial, sans-serif;
+  --radius-sm: 6px;
   --radius: 12px;
-  --shadow-sm: 0 1px 2px rgba(23, 23, 31, 0.05);
-  --shadow: 0 4px 16px rgba(23, 23, 31, 0.06);
+  --radius-pill: 9999px;
+  --shadow-sm: 0 1px 3px rgba(0, 55, 112, 0.08);
+  --shadow: 0 8px 24px rgba(0, 55, 112, 0.08), 0 2px 6px rgba(0, 55, 112, 0.04);
 }
 
 * { box-sizing: border-box; }
@@ -38,6 +44,7 @@ body > section {
 body {
   margin: 0;
   font-family: var(--font-sans);
+  font-feature-settings: "ss01";
   background: var(--bg);
   color: var(--text);
   font-size: 14px;
@@ -186,7 +193,7 @@ header h1 {
 .filtros button {
   padding: 10px 20px;
   border: 1px solid var(--primary);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   background: var(--primary);
   color: var(--primary-contrast);
   cursor: pointer;
@@ -198,7 +205,7 @@ header h1 {
 }
 
 .filtros button:hover { background: var(--primary-hover); }
-.filtros button:active { transform: scale(0.97); }
+.filtros button:active { background: var(--primary-press); transform: scale(0.97); }
 
 .accesos-rapidos {
   display: flex;
@@ -210,6 +217,7 @@ header h1 {
   background: var(--card-bg);
   color: var(--muted);
   border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -222,15 +230,31 @@ header h1 {
 
 .accesos-rapidos button:active { transform: scale(0.97); }
 
+.bloque-kpis {
+  padding: 8px 32px 4px;
+}
+
+.bloque-kpis h2 {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 16px 0 10px;
+}
+
+.bloque-kpis:first-of-type h2 { margin-top: 0; }
+
 .tarjetas {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 14px;
-  padding: 8px 32px 16px;
+  margin-bottom: 8px;
 }
 
 .tarjeta {
   background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
   padding: 18px 20px;
@@ -238,11 +262,12 @@ header h1 {
 
 .tarjeta .valor {
   font-variant-numeric: tabular-nums;
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 27px;
+  font-weight: 400;
+  letter-spacing: -0.3px;
   margin: 6px 0 0;
   color: var(--text);
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .tarjeta .etiqueta {
@@ -260,6 +285,7 @@ header h1 {
 
 .grafico-card {
   background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
   padding: 20px;
@@ -420,7 +446,7 @@ header h1 {
   border: 1px solid var(--border);
   background: var(--card-bg);
   color: var(--text);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
@@ -436,7 +462,7 @@ header h1 {
   border: 1px solid var(--primary);
   background: var(--primary);
   color: var(--primary-contrast);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   cursor: pointer;
   font-size: 13.5px;
   font-weight: 600;
@@ -445,7 +471,7 @@ header h1 {
 }
 
 .btn-principal:hover { background: var(--primary-hover); }
-.btn-principal:active { transform: scale(0.97); }
+.btn-principal:active { background: var(--primary-press); transform: scale(0.97); }
 
 .btn-secundario, .btn-principal { transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease; }
 
@@ -488,6 +514,7 @@ header h1 {
 
 .mapeo-fila {
   background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
   padding: 14px 16px;
@@ -587,12 +614,12 @@ header h1 {
 }
 
 @media (max-width: 560px) {
-  header, .tabs-nav, .filtros, .tarjetas, .graficos, .reporte-caja,
+  header, .tabs-nav, .filtros, .bloque-kpis, .graficos, .reporte-caja,
   .tabla-scroll, .tabla-turnos, #tabCuadre h3, #tabConfig h3, #tabConfig .ayuda,
   .mapeo-categorias, .error, .aviso, .cargando {
     padding-left: 16px;
     padding-right: 16px;
   }
-  .tarjetas, .tabla-turnos { margin-left: 0; margin-right: 0; width: auto; }
+  .tabla-turnos { margin-left: 0; margin-right: 0; width: auto; }
   .error, .aviso { margin-left: 16px; margin-right: 16px; }
 }
