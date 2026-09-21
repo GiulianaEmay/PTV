@@ -379,6 +379,11 @@ header h1 {
   font-weight: 600;
 }
 
+.grafico-canvas {
+  position: relative;
+  height: 240px;
+}
+
 .error {
   margin: 0 32px 16px;
   padding: 11px 15px;

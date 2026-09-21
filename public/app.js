@@ -95,7 +95,11 @@ function renderTarjetas(kpis) {
 function actualizarGrafico(id, tipo, config) {
   if (charts[id]) charts[id].destroy();
   const ctx = document.getElementById(id).getContext("2d");
-  charts[id] = new Chart(ctx, { type: tipo, ...config });
+  charts[id] = new Chart(ctx, {
+    type: tipo,
+    ...config,
+    options: { responsive: true, maintainAspectRatio: false, ...config.options },
+  });
 }
 
 function renderGraficos(kpis) {
@@ -125,7 +129,14 @@ function renderGraficos(kpis) {
       labels: kpis.ventasPorMetodoPago.map((p) => p.nombre),
       datasets: [{ data: kpis.ventasPorMetodoPago.map((p) => p.total), backgroundColor: PALETA, borderColor: "#ffffff", borderWidth: 2 }],
     },
-    options: { plugins: { legend: { labels: { color: "#64748d" } } } },
+    options: {
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: { color: "#64748d", boxWidth: 10, padding: 10, font: { size: 11 } },
+        },
+      },
+    },
   });
 
   actualizarGrafico("chartProductos", "bar", {
