@@ -10,7 +10,7 @@ const PALETA = ["#7c3aed", "#a855f7", "#c4b5fd", "#e0304a", "#b3690a", "#4f46e5"
 
 Chart.defaults.color = "#78798c";
 Chart.defaults.borderColor = "#e6e4ee";
-Chart.defaults.font.family = "'Inter', 'Segoe UI', Arial, sans-serif";
+Chart.defaults.font.family = "'Geist', 'Segoe UI', Arial, sans-serif";
 Chart.defaults.font.size = 12;
 
 function formatoMoneda(valor) {

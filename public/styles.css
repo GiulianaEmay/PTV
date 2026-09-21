@@ -18,7 +18,7 @@
   --warn-bg: #fdf3e2;
   --ok: #6d28d9;
   --ok-bg: #f1ebfe;
-  --font-sans: "Inter", "Segoe UI", Arial, sans-serif;
+  --font-sans: "Geist", "Segoe UI", Arial, sans-serif;
   --radius-sm: 8px;
   --radius: 12px;
   --shadow-sm: 0 1px 2px rgba(23, 23, 31, 0.05);
@@ -26,6 +26,14 @@
 }
 
 * { box-sizing: border-box; }
+
+body > header,
+body > nav,
+body > section {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 body {
   margin: 0;
@@ -186,10 +194,11 @@ header h1 {
   font-weight: 600;
   font-family: var(--font-sans);
   white-space: nowrap;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, transform 0.1s ease;
 }
 
 .filtros button:hover { background: var(--primary-hover); }
+.filtros button:active { transform: scale(0.97); }
 
 .accesos-rapidos {
   display: flex;
@@ -211,6 +220,8 @@ header h1 {
   background: var(--card-bg-hover);
 }
 
+.accesos-rapidos button:active { transform: scale(0.97); }
+
 .tarjetas {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -220,7 +231,6 @@ header h1 {
 
 .tarjeta {
   background: var(--card-bg);
-  border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
   padding: 18px 20px;
@@ -250,7 +260,6 @@ header h1 {
 
 .grafico-card {
   background: var(--card-bg);
-  border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
   padding: 20px;
@@ -363,6 +372,13 @@ header h1 {
 
 .tabla-reporte tbody tr:hover td { background: var(--card-bg-hover); }
 
+.tabla-vacia {
+  text-align: center;
+  color: var(--muted);
+  padding: 24px 12px;
+}
+.tabla-vacia:hover { background: none; }
+
 .tabla-reporte tfoot td {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -412,6 +428,7 @@ header h1 {
 }
 
 .btn-secundario:hover { border-color: var(--border-strong); background: var(--card-bg-hover); }
+.btn-secundario:active { transform: scale(0.97); }
 
 .btn-principal {
   margin-top: 18px;
@@ -424,9 +441,13 @@ header h1 {
   font-size: 13.5px;
   font-weight: 600;
   font-family: var(--font-sans);
+  transition: background 0.15s ease, transform 0.1s ease;
 }
 
 .btn-principal:hover { background: var(--primary-hover); }
+.btn-principal:active { transform: scale(0.97); }
+
+.btn-secundario, .btn-principal { transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease; }
 
 .tabla-scroll {
   padding: 8px 32px 24px;
@@ -467,7 +488,6 @@ header h1 {
 
 .mapeo-fila {
   background: var(--card-bg);
-  border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
   padding: 14px 16px;

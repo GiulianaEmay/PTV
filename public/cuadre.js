@@ -174,6 +174,13 @@
   async function cargarHistorial() {
     const res = await fetch("/api/cuadre-caja");
     const cuadres = await res.json();
+
+    if (!cuadres.length) {
+      document.getElementById("historialCuadres").innerHTML = `
+        <tr><td colspan="7" class="tabla-vacia">Todavia no hay cuadres guardados. Completa el formulario de arriba y guarda el primero.</td></tr>`;
+      return;
+    }
+
     document.getElementById("historialCuadres").innerHTML = cuadres
       .slice(0, 30)
       .map(
