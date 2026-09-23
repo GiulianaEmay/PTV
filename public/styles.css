@@ -435,7 +435,7 @@ header h1 {
   font-size: 13px;
 }
 
-.oculto { display: none; }
+.oculto { display: none !important; }
 
 .flujo-cuadre {
   max-width: 720px;
