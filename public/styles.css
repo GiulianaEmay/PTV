@@ -567,6 +567,10 @@ header h1 {
   max-width: 100%;
 }
 
+.modal-caja .error {
+  margin: 0 0 14px;
+}
+
 .modal-caja h3 {
   margin: 0 0 16px;
   font-size: 15px;

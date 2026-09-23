@@ -66,6 +66,7 @@
   function abrirModalEgreso() {
     document.getElementById("modalEgresoDetalle").value = "";
     document.getElementById("modalEgresoMonto").value = "";
+    document.getElementById("modalEgresoError").classList.add("oculto");
     modalEgreso.classList.remove("oculto");
     document.getElementById("modalEgresoDetalle").focus();
   }
@@ -77,10 +78,13 @@
   function confirmarEgreso() {
     const detalle = document.getElementById("modalEgresoDetalle").value.trim();
     const monto = Number(document.getElementById("modalEgresoMonto").value) || 0;
+    const errorEl = document.getElementById("modalEgresoError");
     if (!detalle || monto <= 0) {
-      mostrarError("El egreso necesita un detalle y un monto mayor a 0.");
+      errorEl.textContent = "El egreso necesita un detalle y un monto mayor a 0.";
+      errorEl.classList.remove("oculto");
       return;
     }
+    errorEl.classList.add("oculto");
     egresos.push({ detalle, monto });
     cerrarModalEgreso();
     renderEgresos();
